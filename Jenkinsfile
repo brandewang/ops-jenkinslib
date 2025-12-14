@@ -14,6 +14,7 @@ pipeline {
             steps {
                 script {
                     checkout.GetCode("${env.srcUrl}", "${env.branchName}")
+                    sh "pwd && ls -l"
                 }
             }
         }
@@ -21,6 +22,7 @@ pipeline {
         stage("Build"){
             steps {
                 script {
+                    sh "pwd && ls -l"
                     build.CodeBuild("maven")
                 }
             }
