@@ -1,8 +1,8 @@
 package org.devops
 
 //Maven
-def MavenBuild(settingsPath="./settings.xml"){
-    sh "mvn clean package -DskipTests -s ${settingsPath}"
+def MavenBuild(){
+    sh "mvn clean package -DskipTests -s settings.xml"
 }
 
 //Gradle
@@ -34,10 +34,16 @@ def YarnBuild(){
 def CodeBuild(type, configPath=""){
     switch(type){
         case "maven":
-            MavenBuild(settingsPath="./settings.xml")
+            MavenBuild()
             break;
         case "gradle":
             GradleBuild()
+            break;
+        case "npm":
+            NpmBuild()
+            break;
+        case "yarm":
+            YarnBuild()
             break;
         default:
             error: "No such tools ... [maven/ant/gradle/npm/yarm/go]"
