@@ -6,6 +6,9 @@ def build = new Build()
 
 pipeline {
     agent { label "build" }
+    options {
+        skipDefaultCheckout true
+    }
     stages {
         stage("Checkout"){
             steps {
