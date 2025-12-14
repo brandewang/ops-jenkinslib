@@ -5,7 +5,7 @@ def checkout = new Checkout()
 def build = new Build()
 
 pipeline {
-    agent { lable "build" }
+    agent { label "build" }
     stages {
         stage("Checkout"){
             steps {
