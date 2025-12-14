@@ -31,7 +31,7 @@ def CodeBuild(type, configPath=""){
         case "maven":
             MavenBuild(settingsPath="./settings.xml")
             break;
-        case "gradle"
+        case "gradle":
             GradleBUild()
             break;
         default:
