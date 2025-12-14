@@ -6,8 +6,13 @@ def MavenBuild(settingsPath="./settings.xml"){
 }
 
 //Gradle
-def GradleBUild(){
+def GradleBuild(){
     sh "gradle build -x test"
+}
+
+//Ant
+def AntBuild(configPath="./build.xml"){
+    sh "ant -f ${configPath}"
 }
 
 //Golang
@@ -32,7 +37,7 @@ def CodeBuild(type, configPath=""){
             MavenBuild(settingsPath="./settings.xml")
             break;
         case "gradle":
-            GradleBUild()
+            GradleBuild()
             break;
         default:
             error: "No such tools ... [maven/ant/gradle/npm/yarm/go]"

@@ -3,6 +3,7 @@ import org.devops.*
 
 def checkout = new Checkout()
 def build = new Build()
+def unittest = new UnitTest()
 
 pipeline {
     agent { label "build" }
@@ -14,7 +15,6 @@ pipeline {
             steps {
                 script {
                     checkout.GetCode("${env.srcUrl}", "${env.branchName}")
-                    sh "pwd && ls -l"
                 }
             }
         }
@@ -22,8 +22,15 @@ pipeline {
         stage("Build"){
             steps {
                 script {
-                    sh "pwd && ls -l"
                     build.CodeBuild("maven")
+                }
+            }
+        }
+
+        stage("UnitTest"){
+            steps {
+                script {
+                    unittest.CodeTest("maven")
                 }
             }
         }
