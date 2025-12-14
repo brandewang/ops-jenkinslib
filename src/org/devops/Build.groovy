@@ -35,7 +35,7 @@ def CodeBuild(type, configPath=""){
             GradleBUild()
             break;
         default:
-            error "No such tools ... [maven/ant/gradle/npm/yarm/go]"
+            error: "No such tools ... [maven/ant/gradle/npm/yarm/go]"
             break;
     }
 }
