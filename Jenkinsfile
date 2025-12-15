@@ -23,6 +23,10 @@ def notified = new Notified()
     env.webhook_commitUser = webHookData["user_username"]           //提交人
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
 
+    println("${env.webhook_branchName}")
+    println("${env.commitUser}")
+
+
     currentBuild.description = "Trigger by Gitlab \n branch: ${env.branchName} \n user: ${env.commitUser}"
     currentBuild.displayName = "${env.commitId}"
  } catch(e){
