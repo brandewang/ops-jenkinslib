@@ -22,7 +22,6 @@ try {
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
 
     currentBuild.description = "Trigger by Gitlab \n branch: ${env.webhook_branchName} \n user: ${env.webhook_commitUser}"
-    currentBuild.displayName = "${env.webhook_commitId}"
  } catch(e){
     print(e)
  }
@@ -56,9 +55,23 @@ pipeline {
             steps {
                 wrap([$class: 'BuildUser']) {
                     script {
-                        echo "BUILD_USER: ${env.BUILD_USER}"
-                        echo "BUILD_USER_ID: ${env.BUILD_USER_ID}"
-                        echo "BUILD_USER_EMAIL: ${env.BUILD_USER_EMAIL}"
+                        if (env.webhook_commitUser) {
+                            // Webhook 触发
+                            currentBuild.description = """
+                                Trigger by GitLab Webhook
+                                Branch: ${env.webhook_branchName}
+                                Committer: ${env.webhook_commitUser}
+                                Commit: ${env.webhook_commitId?.take(8)}
+                            """
+                            currentBuild.displayName = "${env.webhook_commitId}"
+                        } else {
+                            // 手动触发
+                            currentBuild.description = """
+                                Trigger by Jenkins
+                                Branch: ${env.SRC_BRANCH}
+                                User: ${env.BUILD_USER}
+                            """
+                        }
                     }
                 }
             }
