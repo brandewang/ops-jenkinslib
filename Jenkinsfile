@@ -32,6 +32,7 @@ pipeline {
     agent { label "build" }
     options {
         skipDefaultCheckout true
+        withBuildUser()
     }
 
     parameters {
@@ -55,9 +56,9 @@ pipeline {
         stage("Init"){
             steps {
                 script {
-                    echo "env.BUILD_USER: '${BUILD_USER}'"
-                    echo "env.BUILD_USER_ID: '${BUILD_USER_ID}'"
-                    echo "env.BUILD_USER_EMAIL: '${BUILD_USER_EMAIL}'"
+                    echo "env.BUILD_USER: '${env.BUILD_USER}'"
+                    echo "env.BUILD_USER_ID: '${env.BUILD_USER_ID}'"
+                    echo "env.BUILD_USER_EMAIL: '${env.BUILD_USER_EMAIL}'"
                 }
             }
         }
