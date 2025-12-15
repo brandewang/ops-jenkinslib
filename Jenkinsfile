@@ -19,7 +19,7 @@ pipeline {
                 cleanWs()
                 dir('config'){
                     script {
-                        checkout.GetCode("${env.conUrl}", "${env.confBranch}")
+                        checkout.GetCode("${env.confUrl}", "${env.confBranch}")
                         sh 'pwd && ls -l'
                     }
                 }
