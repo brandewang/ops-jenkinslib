@@ -66,7 +66,7 @@ pipeline {
                 }
                 dir('code'){
                     script {
-                        checkout.GetCode("${env.SRC_URL}", "${env.BRANCH_NAME}")
+                        checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         sh 'pwd && ls -l'
                     }
                 }
