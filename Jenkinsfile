@@ -5,11 +5,9 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
-// def confUrl = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
-// def confBranch = 'main'
 
 
- try {
+try {
     //gitlab传递的数据
     println("${WebhookData}")
 
@@ -38,20 +36,20 @@ pipeline {
     }
 
     parameters {
-        string(name: 'SRC_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git', description: '源代码仓库URL')
-        string(name: 'SRC_BRANCH', defaultValue: 'master', description: '代码分支')
-        string(name: 'CONFIG_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git', description: '配置仓库URL')
-        string(name: 'CONFIG_BRANCH', defaultValue: 'main', description: '配置分支')
-        string(name: 'USER_EMAIL', defaultValue: 'wangysh@ciicsh.com', description: '用户邮箱')
+        string(name: 'PARAMS_SRC_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git', description: '源代码仓库URL')
+        string(name: 'PARAMS_SRC_BRANCH', defaultValue: 'master', description: '代码分支')
+        string(name: 'PARAMS_CONFIG_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git', description: '配置仓库URL')
+        string(name: 'PARAMS_CONFIG_BRANCH', defaultValue: 'main', description: '配置分支')
+        string(name: 'PARAMS_USER_EMAIL', defaultValue: 'wangysh@ciicsh.com', description: '用户邮箱')
     }
 
     environment {
         // 将参数转为环境变量
-        USER_EMAIL = "${env.webhook_userEmail ?: params.USER_EMAIL}"
-        SRC_URL = "${env.webhook_srcUrl ?: params.SRC_URL}"
-        SRC_BRANCH = "${env.webhook_srcBranch ?: params.SRC_BRANCH}"
-        CONF_URL = "${params.CONFIG_URL}"
-        CONF_BRANCH = "${params.CONFIG_BRANCH}"
+        USER_EMAIL = "${env.webhook_userEmail ?: params.PARAMS_USER_EMAIL}"
+        SRC_URL = "${env.webhook_srcUrl ?: params.PARAMS_SRC_URL}"
+        SRC_BRANCH = "${env.webhook_srcBranch ?: params.PARAMS_SRC_BRANCH}"
+        CONF_URL = "${params.PARAMS_CONFIG_URL}"
+        CONF_BRANCH = "${params.PARAMS_CONFIG_BRANCH}"
     }
 
     stages {
