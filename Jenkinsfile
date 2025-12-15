@@ -62,7 +62,7 @@ pipeline {
                                 Branch: ${env.webhook_branchName}
                                 Committer: ${env.webhook_commitUser}
                                 Commit: ${env.webhook_commitId?.take(8)}
-                            """.trim()
+                            """.stripIndent().trim()
                             currentBuild.displayName = "${env.webhook_commitId}"
                         } else {
                             // 手动触发
@@ -70,7 +70,7 @@ pipeline {
                                 Trigger by Jenkins
                                 Branch: ${env.SRC_BRANCH}
                                 User: ${env.BUILD_USER}
-                            """.trim()
+                            """.stripIndent().trim()
                         }
                     }
                 }
