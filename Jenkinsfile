@@ -47,7 +47,7 @@ pipeline {
 
     environment {
         // 将参数转为环境变量
-        USER_EMAIL = "${env.webhook_userEmail ?: pararms.USER_EMAIL}"
+        USER_EMAIL = "${env.webhook_userEmail ?: params.USER_EMAIL}"
         SRC_URL = "${env.webhook_srcUrl ?: params.SRC_URL}"
         SRC_BRANCH = "${env.webhook_srcBranch ?: params.SRC_BRANCH}"
         CONF_URL = "${params.CONFIG_URL}"
