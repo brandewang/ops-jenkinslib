@@ -31,7 +31,7 @@ try {
 pipeline {
     agent { label "build" }
     options {
-        skipDefaultCheckout true
+        skipDefaultCheckout true,
         withBuildUser()
     }
 
