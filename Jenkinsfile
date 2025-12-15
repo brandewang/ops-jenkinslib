@@ -72,7 +72,7 @@ pipeline {
                             """.stripIndent().trim()
                         }
                         
-                        USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+                        env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
 
                     }
                 }
