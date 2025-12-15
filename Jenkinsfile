@@ -33,17 +33,15 @@ pipeline {
         stage("Checkout"){
             steps {
                 cleanWs()
-                dir('config'){
+                dir('pipeline_config'){
                     script {
                         checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
                         sh 'pwd && ls -l'
                     }
                 }
-                dir('code'){
-                    script {
-                        checkout.GetCode("${env.SRC_URL}", "${env.BRANCH_NAME}")
-                        sh 'pwd && ls -l'
-                    }
+                script {
+                    checkout.GetCode("${env.SRC_URL}", "${env.BRANCH_NAME}")
+                    sh 'pwd && ls -l'
                 }
             }
         }
