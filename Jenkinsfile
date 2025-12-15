@@ -5,8 +5,31 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
-def confUrl = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
-def confBranch = 'main'
+// def confUrl = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
+// def confBranch = 'main'
+
+
+ try {
+    //gitlab传递的数据
+    println("${WebhookData}")
+
+    //数据格式化
+    webHookData = readJSON text: "${WebhookData}"
+
+    //提取仓库信息
+    env.webhook_srcUrl = webHookData["project"]["git_http_url"]     //项目地址
+    env.webhook_branchName = webHookData["ref"] - "refs/heads/"    //分支
+    env.webhook_commitId = webHookData["checkout_sha"]             //提交id
+    env.webhook_commitUser = webHookData["user_username"]           //提交人
+    env.webhook_userEmail = webHookData["user_email"]               //邮箱
+
+    currentBuild.description = "Trigger by Gitlab \n branch: ${env.branchName} \n user: ${env.commitUser}"
+    currentBuild.displayName = "${env.commitId}"
+ } catch(e){
+    print(e)
+    currentBuild.description = "Trigger by Jenkins"
+ }
+
 
 pipeline {
     agent { label "build" }
@@ -19,12 +42,14 @@ pipeline {
         string(name: 'SRC_BRANCH', defaultValue: 'master', description: '代码分支')
         string(name: 'CONFIG_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git', description: '配置仓库URL')
         string(name: 'CONFIG_BRANCH', defaultValue: 'main', description: '配置分支')
+        string(name: 'USER_EMAIL', defaultValue: 'wangysh@ciicsh.com', description: '用户邮箱')
     }
 
     environment {
         // 将参数转为环境变量
-        SRC_URL = "${params.SRC_URL}"
-        BRANCH_NAME = "${params.SRC_BRANCH}"
+        USER_EMAIL = "${env.webhook_userEmail ?: pararms.USER_EMAIL}"
+        SRC_URL = "${env.webhook_srcUrl ?: params.SRC_URL}"
+        SRC_BRANCH = "${env.webhook_srcBranch ?: params.SRC_BRANCH}"
         CONF_URL = "${params.CONFIG_URL}"
         CONF_BRANCH = "${params.CONFIG_BRANCH}"
     }
