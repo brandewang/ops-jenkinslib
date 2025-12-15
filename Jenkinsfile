@@ -55,6 +55,9 @@ pipeline {
         stage("Init"){
             steps {
                 script {
+                    echo "env.BUILD_USER: '${env.BUILD_USER}'"
+                    echo "env.BUILD_USER_ID: '${env.BUILD_USER_ID}'"
+                    echo "env.BUILD_USER_EMAIL: '${env.BUILD_USER_EMAIL}'"
                     currentBuild.description = "Trigger by Jenkins \n user: ${env.BUILD_USER}"
                 }
             }
