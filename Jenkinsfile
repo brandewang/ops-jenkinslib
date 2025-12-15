@@ -98,7 +98,7 @@ pipeline {
     post {
         always{
             script {
-                notified.SendEmail("wangysh@ciicsh.com")
+                notified.SendEmail("${env.USER_EMAIL}")
             }
         }        
     }
