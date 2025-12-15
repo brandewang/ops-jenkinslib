@@ -33,32 +33,39 @@ pipeline {
         stage("Checkout"){
             steps {
                 cleanWs()
-                dir('pipeline_config'){
+                dir('config'){
                     script {
                         checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
                         sh 'pwd && ls -l'
                     }
                 }
-                script {
-                    checkout.GetCode("${env.SRC_URL}", "${env.BRANCH_NAME}")
-                    sh 'pwd && ls -l'
+                dir('code'){
+                    script {
+                        checkout.GetCode("${env.SRC_URL}", "${env.BRANCH_NAME}")
+                        sh 'pwd && ls -l'
+                    }
                 }
+
             }
         }
 
         stage("Build"){
             steps {
-                script {
-                    sh 'pwd && ls -l'
-                    build.CodeBuild("maven")
+                dir('code'){
+                    script {
+                        sh 'pwd && ls -l'
+                        build.CodeBuild("maven")
+                    }
                 }
             }
         }
 
         stage("UnitTest"){
             steps {
-                script {
-                    unittest.CodeTest("maven")
+                dir('code'){
+                    script {
+                        unittest.CodeTest("maven")
+                    }
                 }
             }
         }
