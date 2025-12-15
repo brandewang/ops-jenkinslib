@@ -25,7 +25,6 @@ try {
     currentBuild.displayName = "${env.webhook_commitId}"
  } catch(e){
     print(e)
-    currentBuild.description = "Trigger by Jenkins \n user: ${env.BUILD_USER}"
  }
 
 
@@ -53,6 +52,13 @@ pipeline {
     }
 
     stages {
+        stage("Init"){
+            steps {
+                script {
+                    currentBuild.description = "Trigger by Jenkins \n user: ${env.BUILD_USER}"
+                }
+            }
+        }
         stage("Checkout"){
             steps {
                 cleanWs()
