@@ -5,6 +5,8 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
+def confUrl = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
+def confBranch = 'main'
 
 pipeline {
     agent { label "build" }
@@ -14,8 +16,18 @@ pipeline {
     stages {
         stage("Checkout"){
             steps {
-                script {
-                    checkout.GetCode("${env.srcUrl}", "${env.branchName}")
+                cleanWs()
+                dir('config'){
+                    script {
+                        checkout.GetCode("${env.conUrl}", "${env.confBranch}")
+                        sh 'pwd && ls -l'
+                    }
+                }
+                dir('code'){
+                    script {
+                        checkout.GetCode("${env.srcUrl}", "${env.branchName}")
+                        sh 'pwd && ls -l'
+                    }
                 }
             }
         }
@@ -23,6 +35,7 @@ pipeline {
         stage("Build"){
             steps {
                 script {
+                    sh 'pwd && ls -l'
                     build.CodeBuild("maven")
                 }
             }
@@ -39,7 +52,6 @@ pipeline {
     post {
         always{
             script {
-                // emailext body: 'hello world!......jenkins', subject: 'test......', to: 'wangysh@ciicsh.com'
                 notified.SendEmail("wangysh@ciicsh.com")
             }
         }        
