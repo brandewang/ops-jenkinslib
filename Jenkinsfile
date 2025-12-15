@@ -22,7 +22,7 @@ try {
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
 
     currentBuild.description = "Trigger by Gitlab \n branch: ${env.webhook_branchName} \n user: ${env.webhook_commitUser}"
-    currentBuild.displayName = "${env.commitId}"
+    currentBuild.displayName = "${env.webhook_commitId}"
  } catch(e){
     print(e)
     currentBuild.description = "Trigger by Jenkins"
