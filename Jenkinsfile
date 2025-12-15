@@ -25,7 +25,7 @@ try {
     currentBuild.displayName = "${env.webhook_commitId}"
  } catch(e){
     print(e)
-    currentBuild.description = "Trigger by Jenkins"
+    currentBuild.description = "Trigger by Jenkins \n user: ${env.BUILD_USER}"
  }
 
 
