@@ -99,7 +99,7 @@ pipeline {
             steps {
                 script {
                     sh 'pwd && ls -l'
-                    echo "${env.JOB_NAME}"
+                    sh "cp config/${env.JOB_NAME}/* code/"
                 }
             }
         }
