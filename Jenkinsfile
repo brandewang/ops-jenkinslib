@@ -1,10 +1,18 @@
 @Library("mylib@main") _
 import org.devops.*
 
+// ========== 工具类初始化 ==========
 def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
+
+// ========== 配置变量 ==========
+def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git'
+def DEFAULT_SRC_BRANCH = 'master'
+def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
+def DEFAULT_CONFIG_BRANCH = 'main'
+def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 
 try {
@@ -34,11 +42,11 @@ pipeline {
     }
 
     parameters {
-        string(name: 'PARAMS_SRC_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git', description: '源代码仓库URL')
-        string(name: 'PARAMS_SRC_BRANCH', defaultValue: 'master', description: '代码分支')
-        string(name: 'PARAMS_CONFIG_URL', defaultValue: 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git', description: '配置仓库URL')
-        string(name: 'PARAMS_CONFIG_BRANCH', defaultValue: 'main', description: '配置分支')
-        string(name: 'PARAMS_USER_EMAIL', defaultValue: 'wangysh@ciicsh.com', description: '用户邮箱')
+        string(name: 'PARAMS_SRC_URL', defaultValue: DEFAULT_SRC_URL, description: '源代码仓库URL')
+        string(name: 'PARAMS_SRC_BRANCH', defaultValue: DEFAULT_SRC_BRANCH, description: '代码分支')
+        string(name: 'PARAMS_CONFIG_URL', defaultValue: DEFAULT_CONFIG_URL, description: '配置仓库URL')
+        string(name: 'PARAMS_CONFIG_BRANCH', defaultValue: DEFAULT_CONFIG_BRANCH, description: '配置分支')
+        string(name: 'PARAMS_USER_EMAIL', defaultValue: DEFAULT_USER_EMAIL, description: '用户邮箱')
     }
 
     environment {
