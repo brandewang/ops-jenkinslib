@@ -85,6 +85,7 @@ pipeline {
                     script {
                         checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
                         sh 'pwd && ls -l'
+                        sh 'cd / && pwd && ls -l'
                     }
                 }
                 dir('code'){
