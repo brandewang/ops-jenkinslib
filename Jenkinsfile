@@ -84,17 +84,23 @@ pipeline {
                 dir('config'){
                     script {
                         checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
-                        sh 'pwd && ls -l'
-                        sh 'cd / && pwd && ls -l'
                     }
                 }
                 dir('code'){
                     script {
                         checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
-                        sh 'pwd && ls -l'
                     }
                 }
 
+            }
+        }
+
+        stage("PrepareConfig"){
+            steps {
+                script {
+                    sh 'pwd && ls -l'
+                    echo ${env.JOB_NAME}
+                }
             }
         }
 
