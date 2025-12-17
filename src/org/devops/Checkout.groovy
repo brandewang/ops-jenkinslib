@@ -5,4 +5,15 @@ def GetCode(srcUrl, branchName){
                     extensions: [], 
                     userRemoteConfigs: [[credentialsId: '9eef3cd8-5374-4368-8a70-d1791640dc11', 
                     url: srcUrl]])
+
+    def commitId = sh(
+        script: 'git rev-parse HEAD',
+        returnStdout: true
+    ).trim()
+
+    return [
+        success: true,
+        commitId: commitId,
+        shortCommitId: commitId.substring(0, 8),
+    ]
 }

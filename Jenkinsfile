@@ -91,13 +91,14 @@ pipeline {
                 cleanWs()
                 dir('config'){
                     script {
-                        def checkoutResult = checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
-                        println("${checkoutResult}")
+                        checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
                     }
                 }
                 dir('code'){
                     script {
-                        checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
+                        def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
+                        env.SRC_COMMIT_ID = result.shortCommitId
+                        println("{env.SRC_COMMIT_ID}")
                     }
                 }
 
