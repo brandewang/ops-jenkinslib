@@ -11,9 +11,18 @@ def GetCode(srcUrl, branchName){
         returnStdout: true
     ).trim()
 
+    def commitMessage = sh(
+        script: 'git log -1 --pretty=format:%s',
+        returnStdout: true
+    ).trim()
+
+    def title = extractCommitTitle(commitMessage)
+
     return [
         success: true,
         commitId: commitId,
         shortCommitId: commitId.substring(0, 8),
+        title: title,
+        message: commitMessage 
     ]
 }

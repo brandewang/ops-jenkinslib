@@ -28,6 +28,7 @@ try {
     env.webhook_srcUrl = webHookData["project"]["git_http_url"]     //项目地址
     env.webhook_branchName = webHookData["ref"] - "refs/heads/"    //分支
     env.webhook_commitId = webHookData["checkout_sha"]             //提交id
+    env.webhook_commitTitle = webHookData["title"]             //提交描述
     env.webhook_commitUser = webHookData["user_username"]           //提交人
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
 
@@ -71,6 +72,7 @@ pipeline {
                     script {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
+                        env.SRC_COMMIT_TITLE = checkoutResult.title
                     }
                 }
 
@@ -119,7 +121,7 @@ pipeline {
                             Committer: ${env.webhook_commitUser}
                             Commit: ${env.SRC_COMMIT_ID}
                         """.stripIndent().trim()
-                        currentBuild.displayName = "${env.webhook_commitId}"
+                        // currentBuild.displayName = "${env.webhook_commitId}"
                     } else {
                         // 手动触发
                         currentBuild.description = """
