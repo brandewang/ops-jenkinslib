@@ -98,7 +98,7 @@ pipeline {
                     script {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
-                        println("{env.SRC_COMMIT_ID}")
+                        println("${env.SRC_COMMIT_ID}")
                     }
                 }
 
