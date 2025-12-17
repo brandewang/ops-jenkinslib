@@ -115,23 +115,22 @@ pipeline {
                     // 设置构建描述
                     if (env.webhook_commitUser) {
                         // Webhook 触发
-                        currentBuild.description = """
-                            Trigger by GitLab Webhook
+                        currentBuild.description = """                           
+                            Title: ${env.SRC_COMMIT_TITLE}
                             Branch: ${env.webhook_branchName}
                             Committer: ${env.webhook_commitUser}
                             Commit: ${env.SRC_COMMIT_ID}
-                            Title: ${env.SRC_COMMIT_TITLE}
                         """.stripIndent().trim()
-                        // currentBuild.displayName = "${env.webhook_commitId}"
+                        currentBuild.displayName = "${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
                     } else {
                         // 手动触发
-                        currentBuild.description = """
-                            Trigger by Jenkins
+                        currentBuild.description = """                           
+                            Title: ${env.SRC_COMMIT_TITLE}
                             Branch: ${env.SRC_BRANCH}
                             User: ${env.BUILD_USER}
                             Commit: ${env.SRC_COMMIT_ID}
-                            Title: ${env.SRC_COMMIT_TITLE}
                         """.stripIndent().trim()
+                        currentBuild.displayName = "${env.BUILD_NUMBER} - Trigger by Jenkins"
                     }
                     
                     // 发送构建通知
