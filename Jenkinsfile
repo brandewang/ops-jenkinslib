@@ -82,7 +82,8 @@ pipeline {
         stage("PrepareConfig"){
             steps {
                 script {
-                    sh "cp config/${env.JOB_NAME}/* code/"
+                    echo "${env.WORKSPACE}"
+                    sh "cp ${env.WORKSPACE}/config/${env.JOB_NAME}/* ${env.WORKSPACE}/code/"
                 }
             }
         }
