@@ -6,17 +6,24 @@ def GetCode(srcUrl, branchName){
                     userRemoteConfigs: [[credentialsId: '9eef3cd8-5374-4368-8a70-d1791640dc11', 
                     url: srcUrl]])
 
+    // 获取完整 commit id
     def commitId = sh(
         script: 'git rev-parse HEAD',
         returnStdout: true
     ).trim()
-
+    
+    // 获取提交信息
     def commitMessage = sh(
         script: 'git log -1 --pretty=format:%s',
         returnStdout: true
     ).trim()
-
-    def title = extractCommitTitle(commitMessage)
+    
+    // 提取标题（第一行）
+    def title = ""
+    if (commitMessage) {
+        def lines = commitMessage.split('\n')
+        title = lines[0].trim()
+    }
 
     return [
         success: true,
