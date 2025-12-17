@@ -14,6 +14,7 @@ def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-
 def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
+// ========== 应用变量 ==========
 
 try {
     //gitlab传递的数据
@@ -29,7 +30,6 @@ try {
     env.webhook_commitUser = webHookData["user_username"]           //提交人
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
 
-    currentBuild.description = "Trigger by Gitlab \n branch: ${env.webhook_branchName} \n user: ${env.webhook_commitUser}"
  } catch(e){
     print(e)
  }
@@ -91,7 +91,8 @@ pipeline {
                 cleanWs()
                 dir('config'){
                     script {
-                        checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
+                        def checkoutResult = checkout.GetCode("${env.CONF_URL}", "${env.CONF_BRANCH}")
+                        println("${checkoutResult}")
                     }
                 }
                 dir('code'){
