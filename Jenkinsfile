@@ -58,34 +58,34 @@ pipeline {
     }
 
     stages {
-        stage("Init"){
-            steps {
-                wrap([$class: 'BuildUser']) {
-                    script {
-                        if (env.webhook_commitUser) {
-                            // Webhook 触发
-                            currentBuild.description = """
-                                Trigger by GitLab Webhook
-                                Branch: ${env.webhook_branchName}
-                                Committer: ${env.webhook_commitUser}
-                                Commit: ${env.webhook_commitId?.take(8)}
-                            """.stripIndent().trim()
-                            currentBuild.displayName = "${env.webhook_commitId}"
-                        } else {
-                            // 手动触发
-                            currentBuild.description = """
-                                Trigger by Jenkins
-                                Branch: ${env.SRC_BRANCH}
-                                User: ${env.BUILD_USER}
-                            """.stripIndent().trim()
-                        }
+        // stage("Init"){
+        //     steps {
+        //         wrap([$class: 'BuildUser']) {
+        //             script {
+        //                 if (env.webhook_commitUser) {
+        //                     // Webhook 触发
+        //                     currentBuild.description = """
+        //                         Trigger by GitLab Webhook
+        //                         Branch: ${env.webhook_branchName}
+        //                         Committer: ${env.webhook_commitUser}
+        //                         Commit: ${env.webhook_commitId?.take(8)}
+        //                     """.stripIndent().trim()
+        //                     currentBuild.displayName = "${env.webhook_commitId}"
+        //                 } else {
+        //                     // 手动触发
+        //                     currentBuild.description = """
+        //                         Trigger by Jenkins
+        //                         Branch: ${env.SRC_BRANCH}
+        //                         User: ${env.BUILD_USER}
+        //                     """.stripIndent().trim()
+        //                 }
                         
-                        env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+        //                 env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
 
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
         stage("Checkout"){
             steps {
                 cleanWs()
@@ -98,7 +98,6 @@ pipeline {
                     script {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
-                        println("${env.SRC_COMMIT_ID}")
                     }
                 }
 
@@ -137,8 +136,31 @@ pipeline {
     }
     post {
         always{
-            script {
-                notified.SendEmail("${env.USER_EMAIL}")
+            wrap([$class: 'BuildUser']) {
+                script {
+                    if (env.webhook_commitUser) {
+                        // Webhook 触发
+                        currentBuild.description = """
+                            Trigger by GitLab Webhook
+                            Branch: ${env.webhook_branchName}
+                            Committer: ${env.webhook_commitUser}
+                            Commit: ${env.SRC_COMMIT_ID}
+                        """.stripIndent().trim()
+                        currentBuild.displayName = "${env.webhook_commitId}"
+                    } else {
+                        // 手动触发
+                        currentBuild.description = """
+                            Trigger by Jenkins
+                            Branch: ${env.SRC_BRANCH}
+                            User: ${env.BUILD_USER}
+                            Commit: ${env.SRC_COMMIT_ID}
+                        """.stripIndent().trim()
+                    }
+                    
+                    env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+
+                    notified.SendEmail("${env.USER_EMAIL}")
+                }
             }
         }        
     }
