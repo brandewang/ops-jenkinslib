@@ -121,7 +121,7 @@ pipeline {
                             Committer: ${env.webhook_commitUser}
                             Commit: ${env.SRC_COMMIT_ID}
                         """.stripIndent().trim()
-                        currentBuild.displayName = "${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
+                        currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
                     } else {
                         // 手动触发
                         currentBuild.description = """                           
@@ -130,7 +130,7 @@ pipeline {
                             User: ${env.BUILD_USER}
                             Commit: ${env.SRC_COMMIT_ID}
                         """.stripIndent().trim()
-                        currentBuild.displayName = "${env.BUILD_NUMBER} - Trigger by Jenkins"
+                        currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
                     }
                     
                     // 发送构建通知
