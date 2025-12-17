@@ -120,6 +120,7 @@ pipeline {
                             Branch: ${env.webhook_branchName}
                             Committer: ${env.webhook_commitUser}
                             Commit: ${env.SRC_COMMIT_ID}
+                            Title: ${env.SRC_COMMIT_TITLE}
                         """.stripIndent().trim()
                         // currentBuild.displayName = "${env.webhook_commitId}"
                     } else {
@@ -129,6 +130,7 @@ pipeline {
                             Branch: ${env.SRC_BRANCH}
                             User: ${env.BUILD_USER}
                             Commit: ${env.SRC_COMMIT_ID}
+                            Title: ${env.SRC_COMMIT_TITLE}
                         """.stripIndent().trim()
                     }
                     
