@@ -15,6 +15,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
+def app = ['build_type': 'maven']
 
 try {
     //gitlab传递的数据
@@ -58,34 +59,6 @@ pipeline {
     }
 
     stages {
-        // stage("Init"){
-        //     steps {
-        //         wrap([$class: 'BuildUser']) {
-        //             script {
-        //                 if (env.webhook_commitUser) {
-        //                     // Webhook 触发
-        //                     currentBuild.description = """
-        //                         Trigger by GitLab Webhook
-        //                         Branch: ${env.webhook_branchName}
-        //                         Committer: ${env.webhook_commitUser}
-        //                         Commit: ${env.webhook_commitId?.take(8)}
-        //                     """.stripIndent().trim()
-        //                     currentBuild.displayName = "${env.webhook_commitId}"
-        //                 } else {
-        //                     // 手动触发
-        //                     currentBuild.description = """
-        //                         Trigger by Jenkins
-        //                         Branch: ${env.SRC_BRANCH}
-        //                         User: ${env.BUILD_USER}
-        //                     """.stripIndent().trim()
-        //                 }
-                        
-        //                 env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
-
-        //             }
-        //         }
-        //     }
-        // }
         stage("Checkout"){
             steps {
                 cleanWs()
@@ -107,7 +80,6 @@ pipeline {
         stage("PrepareConfig"){
             steps {
                 script {
-                    sh 'pwd && ls -l'
                     sh "cp config/${env.JOB_NAME}/* code/"
                 }
             }
@@ -117,8 +89,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        sh 'pwd && ls -l'
-                        build.CodeBuild("maven")
+                        build.CodeBuild("${app.build_type}")
                     }
                 }
             }
@@ -128,7 +99,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        unittest.CodeTest("maven")
+                        unittest.CodeTest("${app.build_type}")
                     }
                 }
             }
@@ -138,6 +109,8 @@ pipeline {
         always{
             wrap([$class: 'BuildUser']) {
                 script {
+
+                    // 设置构建描述
                     if (env.webhook_commitUser) {
                         // Webhook 触发
                         currentBuild.description = """
@@ -157,8 +130,8 @@ pipeline {
                         """.stripIndent().trim()
                     }
                     
+                    // 发送构建通知
                     env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
-
                     notified.SendEmail("${env.USER_EMAIL}")
                 }
             }
