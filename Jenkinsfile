@@ -54,7 +54,7 @@ pipeline {
     environment {
         // 将参数转为环境变量
         SRC_URL = "${env.webhook_srcUrl ?: params.PARAMS_SRC_URL}"
-        SRC_BRANCH = "${env.webhook_srcBranch ?: params.PARAMS_SRC_BRANCH}"
+        SRC_BRANCH = "${env.webhook_branchName ?: params.PARAMS_SRC_BRANCH}"
         CONF_URL = "${params.PARAMS_CONFIG_URL}"
         CONF_BRANCH = "${params.PARAMS_CONFIG_BRANCH}"
     }
