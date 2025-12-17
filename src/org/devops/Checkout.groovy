@@ -6,6 +6,11 @@ def GetCode(srcUrl, branchName){
                     userRemoteConfigs: [[credentialsId: '9eef3cd8-5374-4368-8a70-d1791640dc11', 
                     url: srcUrl]])
 
+    if (branchName.startsWith('refs/tags/')) {
+        def tag = branchName - 'refs/tags/'
+        sh "git checkout tags/${tag}"
+    }
+
     // 获取完整 commit id
     def commitId = sh(
         script: 'git rev-parse HEAD',
