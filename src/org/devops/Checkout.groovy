@@ -26,11 +26,21 @@ def GetCode(srcUrl, branchName){
         title = lines[0].trim()
     }
 
+    // 提取tag
+    def tag = ''
+    def isTag = ref.startsWith('refs/tags/')
+    if (isTag) {
+        tag = branchName - 'refs/tags/'
+    } else {
+        tag = commitId.substring(0, 8)
+    }
+
     return [
         success: true,
         commitId: commitId,
         shortCommitId: commitId.substring(0, 8),
         title: title,
         message: commitMessage 
+        tag: tag
     ]
 }

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: web
+  name: devops03-web-service
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate    # 滚动更新策略
+    rollingUpdate:
+      maxSurge: 1                   # 升级过程中最多可以比原先设置的副本数多出的数量
+      maxUnavailable: 1             # 升级过程中最多有多少个POD处于无法提供服务的状态
+  selector:
+    matchLabels:
+      app: devops03-web-service
+  template:
+    metadata:
+      labels:
+        app: devops03-web-service
+        track: stable
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: devops03-web-service
+          image: ${harbor-image-url}
+          imagePullPolicy: Always
+          resources:                     # 容器资源管理
+            limits:                      # 资源限制（监控使用情况）
+              cpu: 0.5
+              memory: 200Mi
+            requests:                    # 最小可用资源（灵活调度）
+              cpu: 0.15
+              memory: 100Mi
+          ports:
+            - name: server-port
+              containerPort: 80
+          readinessProbe:                # 就绪探针
+            httpGet:
+              path: /actuator/health/readiness
+              port: server-port
+            initialDelaySeconds: 30      # 延迟加载时间
+            periodSeconds: 30            # 重试时间间隔
+            timeoutSeconds: 10           # 超时时间设置
+            successThreshold: 1          # 健康阈值
+            failureThreshold: 30         # 不健康阈值
+          livenessProbe:                 # 存活探针
+            httpGet:
+              path: /actuator/health/liveness
+              port: server-port
+            initialDelaySeconds: 300     # 延迟加载时间
+            periodSeconds: 6             # 重试时间间隔
+            timeoutSeconds: 5            # 超时时间设置
+            successThreshold: 1          # 健康阈值
+            failureThreshold: 10         # 不健康阈值
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: hrzx-eva
+  name: devops03-web-service
+spec:
+  ports:
+    - port: 80
+      name: devops03-web-service
+      targetPort: 80
+      #nodePort: 80  #对外暴露端口（若需要开放则与type: NodePort一起）
+  #type: NodePort
+  selector:
+    app: devops03-web-service

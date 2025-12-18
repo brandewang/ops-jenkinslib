@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: devops03
+  name: devops03-maven-service-lib
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate    # 滚动更新策略
+    rollingUpdate:
+      maxSurge: 1                   # 升级过程中最多可以比原先设置的副本数多出的数量
+      maxUnavailable: 1             # 升级过程中最多有多少个POD处于无法提供服务的状态
+  selector:
+    matchLabels:
+      app: devops03-maven-service-lib
+  template:
+    metadata:
+      labels:
+        app: devops03-maven-service-lib
+        track: stable
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: devops03-maven-service-lib
+          image: ${harbor-image-url}
+          imagePullPolicy: Always
+          resources:                     # 容器资源管理
+            limits:                      # 资源限制（监控使用情况）
+              cpu: 0.5
+              memory: 1Gi
+            requests:                    # 最小可用资源（灵活调度）
+              cpu: 0.15
+              memory: 200Mi
+          ports:
+            - name: server-port
+              containerPort: 6003
+          readinessProbe:                # 就绪探针
+            httpGet:
+              path: /health/ping
+              port: server-port
+            initialDelaySeconds: 30      # 延迟加载时间
+            periodSeconds: 30            # 重试时间间隔
+            timeoutSeconds: 10           # 超时时间设置
+            successThreshold: 1          # 健康阈值
+            failureThreshold: 30         # 不健康阈值
+          livenessProbe:                 # 存活探针
+            httpGet:
+              path: /health/ping
+              port: server-port
+            initialDelaySeconds: 300     # 延迟加载时间
+            periodSeconds: 6             # 重试时间间隔
+            timeoutSeconds: 5            # 超时时间设置
+            successThreshold: 1          # 健康阈值
+            failureThreshold: 10         # 不健康阈值
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx512m -XX:+UseG1GC"
+            - name: NACOS_IP
+              value: "172.16.7.74"
+            - name: NACOS_PORT
+              value: "8091"
+            - name: NACOS_NAMESPACE
+              value: "devops03-maven-service-lib"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: devops03
+  name: devops03-maven-service-lib-service
+spec:
+  ports:
+    - port: 6008
+      name: devops03-maven-service-lib-service
+      targetPort: 6008
+  selector:
+    app: devops03-maven-service-lib
+
+---

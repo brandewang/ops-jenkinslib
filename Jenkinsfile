@@ -44,10 +44,15 @@ pipeline {
     }
 
     parameters {
-        string(name: 'PARAMS_SRC_URL', defaultValue: DEFAULT_SRC_URL, description: '源代码仓库URL')
+        // string(name: 'PARAMS_SRC_URL', defaultValue: DEFAULT_SRC_URL, description: '源代码仓库URL')
+        choice(
+        name: 'PARAMS_SRC_URL',
+        choices: [
+            'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git'
+        ],
+        description: '源代码仓库URL'
+    )
         string(name: 'PARAMS_SRC_BRANCH', defaultValue: DEFAULT_SRC_BRANCH, description: '代码分支')
-        string(name: 'PARAMS_CONFIG_URL', defaultValue: DEFAULT_CONFIG_URL, description: '配置仓库URL')
-        string(name: 'PARAMS_CONFIG_BRANCH', defaultValue: DEFAULT_CONFIG_BRANCH, description: '配置分支')
         string(name: 'PARAMS_USER_EMAIL', defaultValue: DEFAULT_USER_EMAIL, description: '用户邮箱')
     }
 
@@ -55,8 +60,8 @@ pipeline {
         // 将参数转为环境变量
         SRC_URL = "${env.webhook_srcUrl ?: params.PARAMS_SRC_URL}"
         SRC_BRANCH = "${env.webhook_branchName ?: params.PARAMS_SRC_BRANCH}"
-        CONF_URL = "${params.PARAMS_CONFIG_URL}"
-        CONF_BRANCH = "${params.PARAMS_CONFIG_BRANCH}"
+        CONF_URL = "${DEFAULT_CONFIG_URL}"
+        CONF_BRANCH = "${DEFAULT_CONFIG_BRANCH}"
     }
 
     stages {
@@ -73,6 +78,7 @@ pipeline {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
                         env.SRC_COMMIT_TITLE = checkoutResult.title
+                        env.IMAGE_TAG = checkoutResult.tag
                     }
                 }
 
