@@ -143,6 +143,9 @@ pipeline {
                     // 发送构建通知
                     env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
                     notified.SendEmail("${env.USER_EMAIL}")
+
+                    //测试
+                    println("${env.IMAGE_TAG}")
                 }
             }
         }        
