@@ -57,7 +57,7 @@ pipeline {
     }
 
     environment {
-        // 将参数转为环境变量
+        // 将参数转为环境变量 并固定无法更改
         SRC_URL = "${env.webhook_srcUrl ?: params.PARAMS_SRC_URL}"
         SRC_BRANCH = "${env.webhook_branchName ?: params.PARAMS_SRC_BRANCH}"
         CONF_URL = "${DEFAULT_CONFIG_URL}"
