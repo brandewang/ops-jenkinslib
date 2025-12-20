@@ -130,7 +130,7 @@ pipeline {
                     
                     dir('code') {
                         // 上传到 Maven 仓库
-                        def mavenProjectInfo = getMavenProjectInfo(pomPath = 'pom.xml')
+                        def mavenProjectInfo = Upload.getMavenProjectInfo(pomPath = 'pom.xml')
                         artifact_file = "${mavenProjectInfo.info.jarFile}"
 
                         sh """
