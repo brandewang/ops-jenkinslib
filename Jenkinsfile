@@ -15,7 +15,9 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'artifact_upload': true, 'image_upload': false]
+def app = ['build_type': 'maven', 
+            'artifact_upload': true, 'artifact_upload_url': 'http://dxnexus.ciicsh.com/repository/maven-releases/', 'artifact_upload_repoid': 'mymaven','artifact_file':'demo-0.0.1-SNAPSHOT.jar', 
+            'image_upload': false]
 
 try {
     //gitlab传递的数据
@@ -109,6 +111,34 @@ pipeline {
                 dir('code'){
                     script {
                         unittest.CodeTest("${app.build_type}")
+                    }
+                }
+            }
+        }
+
+        stage('Upload Artifact') {
+            when {
+                expression { 
+                    // 条件1：参数控制
+                    app.artifact_upload == true 
+                }
+            }
+            steps {
+                script {
+                    echo "🚀 开始上传 Maven 制品到 Nexus..."
+                    
+                    dir('code') {
+                        // 上传到 Maven 仓库
+                        sh """
+                            mvn deploy:deploy-file \
+                            -DgeneratePom=false \
+                            -DrepositoryId=${app.artifact_upload_repoid}  \
+                            -Dfile=target/${app.artifact_file} \
+                            -Durl=${app.artifact_upload_url} \
+                            -DpomFile=pom.xml 
+                        """
+                        
+                        echo "✅ 制品上传完成"
                     }
                 }
             }
