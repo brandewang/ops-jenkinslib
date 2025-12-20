@@ -132,13 +132,13 @@ pipeline {
                     dir('code') {
                         // 上传到 Maven 仓库
                         def mavenProjectInfo = upload.getMavenProjectInfo('pom.xml')
-                        artifact_file = "${mavenProjectInfo.info.jarFile}"
+                        artifact_file = "${mavenProjectInfo.jarFile}"
 
                         sh """
                             mvn deploy:deploy-file \
                             -DgeneratePom=false \
                             -DrepositoryId=${app.artifact_upload_repoid}  \
-                            -Dfile=target/${app.artifact_file} \
+                            -Dfile=target/${artifact_file} \
                             -Durl=${app.artifact_upload_url} \
                             -DpomFile=pom.xml 
                         """                      
