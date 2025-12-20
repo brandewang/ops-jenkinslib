@@ -28,7 +28,7 @@ def GetCode(srcUrl, branchName){
 
     // 提取tag
     def tag = ""
-    def isTag = ref.startsWith('refs/tags/')
+    def isTag = branchName.startsWith('refs/tags/')
     if (isTag) {
         tag = branchName - 'refs/tags/'
     } else {
