@@ -130,7 +130,7 @@ pipeline {
                     
                     dir('code') {
                         // 上传到 Maven 仓库
-                        def mavenProjectInfo = Upload.getMavenProjectInfo(pomPath = 'pom.xml')
+                        def mavenProjectInfo = Upload.getMavenProjectInfo(pomPath: 'pom.xml')
                         artifact_file = "${mavenProjectInfo.info.jarFile}"
 
                         sh """
@@ -143,6 +143,8 @@ pipeline {
                         """                      
                     }
                     echo "✅ 制品上传完成"
+                    env.SRC_BRANCH1 = '555hellowolrd!'
+                    println("${env.SRC_BRANCH1}")
                 }
             }
         }
@@ -179,8 +181,8 @@ pipeline {
 
                     //测试
                     println("${env.IMAGE_TAG}")
-                    env.SRC_BRANCH = '123hellowolrd!'
-                    println("${env.SRC_BRANCH}")
+                    env.SRC_BRANCH1 = '123hellowolrd!'
+                    println("${env.SRC_BRANCH1}")
                 }
             }
         }        
