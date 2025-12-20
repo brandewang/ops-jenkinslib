@@ -138,7 +138,7 @@ pipeline {
                             mvn deploy:deploy-file \
                             -DgeneratePom=false \
                             -DrepositoryId=${app.artifact_upload_repoid}  \
-                            -Dfile=target/${artifact_file} \
+                            -Dfile=${artifact_file} \
                             -Durl=${app.artifact_upload_url} \
                             -DpomFile=pom.xml 
                         """                      
