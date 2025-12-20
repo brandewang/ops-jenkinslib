@@ -17,9 +17,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 
-            'artifact_upload': true, 'artifact_upload_url': 'http://dxnexus.ciicsh.com/repository/maven-releases/', 'artifact_upload_repoid': 'mymaven', 
-            'image_upload': false]
+def app = ['build_type': 'maven', 'artifact_upload': true,'image_upload': false]
 
 try {
     //gitlab传递的数据
@@ -129,9 +127,7 @@ pipeline {
                 script {                    
                     dir('code') {
                         // 上传到 Maven 仓库
-                        def mavenProjectInfo = upload.getMavenProjectInfo('pom.xml')
-                        artifact_file = "${mavenProjectInfo.jarFile}"
-                        upload.deployMavenArtifact("${app.artifact_upload_url}", "${app.artifact_upload_repoid}", "${artifact_file}", 'pom.xml')                   
+                        upload.deployMavenArtifact()                 
                     }
 
                 }
@@ -170,8 +166,6 @@ pipeline {
 
                     //测试
                     println("${env.IMAGE_TAG}")
-                    env.SRC_BRANCH1 = '123hellowolrd!'
-                    println("${env.SRC_BRANCH1}")
                 }
             }
         }        
