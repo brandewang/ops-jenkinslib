@@ -15,7 +15,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven']
+def app = ['build_type': 'maven', 'artifact_upload': true, 'image_upload': false]
 
 try {
     //gitlab传递的数据
@@ -146,6 +146,8 @@ pipeline {
 
                     //测试
                     println("${env.IMAGE_TAG}")
+                    env.SRC_BRANCH = '123hellowolrd!'
+                    println("${env.SRC_BRANCH}")
                 }
             }
         }        
