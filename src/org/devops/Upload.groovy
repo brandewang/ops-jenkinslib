@@ -1,6 +1,5 @@
 package org.devops
 
-
 //Maven
 def getMavenProjectInfo(pomPath = 'pom.xml') {
     def info = [:]
@@ -26,4 +25,21 @@ def getMavenProjectInfo(pomPath = 'pom.xml') {
     info.fullName = "${info.groupId}:${info.artifactId}:${info.version}"
     
     return info
+}
+
+def deployMavenArtifact(repoUrl, repoId, filePath, pomPath = 'pom.xml') {
+        echo "🚀 开始上传 Maven 制品到 Nexus..."
+
+        // 执行部署
+        sh """
+            mvn deploy:deploy-file \\
+            -DgeneratePom=false \\
+            -DrepositoryId=${repoId}  \\
+            -Dfile=${filePath} \\
+            -Durl=${repoUrl} \\
+            -DpomFile=${pomPath} 
+        """
+        
+        echo "✅ 制品部署成功: ${projectInfo.fullName}"
+        
 }

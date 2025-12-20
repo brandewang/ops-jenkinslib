@@ -126,26 +126,14 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    echo "🚀 开始上传 Maven 制品到 Nexus..."
-                    
+                script {                    
                     dir('code') {
                         // 上传到 Maven 仓库
                         def mavenProjectInfo = upload.getMavenProjectInfo('pom.xml')
                         artifact_file = "${mavenProjectInfo.jarFile}"
-
-                        sh """
-                            mvn deploy:deploy-file \
-                            -DgeneratePom=false \
-                            -DrepositoryId=${app.artifact_upload_repoid}  \
-                            -Dfile=${artifact_file} \
-                            -Durl=${app.artifact_upload_url} \
-                            -DpomFile=pom.xml 
-                        """                      
+                        upload.deployMavenArtifact("${app.artifact_upload_url}", "${app.artifact_upload_repoid}", "${artifact_file}", 'pom.xml')                   
                     }
-                    echo "✅ 制品上传完成"
-                    env.SRC_BRANCH1 = '555hellowolrd!'
-                    println("${env.SRC_BRANCH1}")
+
                 }
             }
         }
