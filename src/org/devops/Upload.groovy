@@ -1,54 +1,68 @@
 package org.devops
 
-//Maven
+// 分离的函数定义
+def getMavenProjectInfo(pomPath = 'pom.xml') {
+    def info = [:]
+    
+    info.artifactId = sh(
+        script: "mvn help:evaluate -Dexpression=project.artifactId -f ${pomPath} -q -DforceStdout",
+        returnStdout: true
+    ).trim()
+    
+    info.version = sh(
+        script: "mvn help:evaluate -Dexpression=project.version -f ${pomPath} -q -DforceStdout",
+        returnStdout: true
+    ).trim()
+    
+    info.groupId = sh(
+        script: "mvn help:evaluate -Dexpression=project.groupId -f ${pomPath} -q -DforceStdout",
+        returnStdout: true
+    ).trim()
+    
+    // 获取打包类型
+    info.packaging = sh(
+        script: "mvn help:evaluate -Dexpression=project.packaging -f ${pomPath} -q -DforceStdout",
+        returnStdout: true
+    ).trim()
+    
+    // 动态构建文件名
+    info.fileName = "${info.artifactId}-${info.version}.${info.packaging}"
+    info.filePath = "target/${info.fileName}"
+    info.fullName = "${info.groupId}:${info.artifactId}:${info.version}"
+    
+    return info
+}
 
-def deployMavenArtifact(repoUrl='http://dxnexus.ciicsh.com/repository/maven-releases/', repoId='mymaven', pomPath = 'pom.xml') {
-    def getMavenProjectInfo(pomPath = 'pom.xml') {
-        def info = [:]
-        
-        // 方法1：使用 mvn 命令（推荐，不需要额外插件）
-        info.artifactId = sh(
-            script: "mvn help:evaluate -Dexpression=project.artifactId -f ${pomPath} -q -DforceStdout",
-            returnStdout: true
-        ).trim()
-        
-        info.version = sh(
-            script: "mvn help:evaluate -Dexpression=project.version -f ${pomPath} -q -DforceStdout",
-            returnStdout: true
-        ).trim()
-        
-        info.groupId = sh(
-            script: "mvn help:evaluate -Dexpression=project.groupId -f ${pomPath} -q -DforceStdout",
-            returnStdout: true
-        ).trim()
-        
-        // 构建文件名
-        info.jarFile = "target/${info.artifactId}-${info.version}.jar"
-        info.fullName = "${info.groupId}:${info.artifactId}:${info.version}"
-        
-        return info
-    }
-
-// 获取项目信息
+def deployMavenArtifact(repoUrl='http://dxnexus.ciicsh.com/repository/maven-releases/', 
+                       repoId='mymaven', 
+                       pomPath = 'pom.xml') {
+    
+    // 获取项目信息
     def projectInfo = getMavenProjectInfo(pomPath)
     
     echo "📦 部署信息:"
     echo "  GroupId: ${projectInfo.groupId}"
     echo "  ArtifactId: ${projectInfo.artifactId}"
     echo "  Version: ${projectInfo.version}"
-    echo "  文件: ${projectInfo.jarFile}"
+    echo "  Packaging: ${projectInfo.packaging}"
+    echo "  文件: ${projectInfo.filePath}"
     echo "🚀 开始上传 Maven 制品到 Nexus..."
+
+    // 检查文件是否存在
+    if (!fileExists(projectInfo.filePath)) {
+        error("❌ 文件不存在: ${projectInfo.filePath}，请先执行 Maven 构建！")
+    }
 
     // 执行部署
     sh """
         mvn deploy:deploy-file \\
-        -DgeneratePom=false \\
-        -DrepositoryId=${repoId}  \\
-        -Dfile=${projectInfo.jarFile} \\
-        -Durl=${repoUrl} \\
-        -DpomFile=${pomPath} 
+            -DgeneratePom=false \\
+            -DrepositoryId=${repoId} \\
+            -Dfile=${projectInfo.filePath} \\
+            -Durl=${repoUrl} \\
+            -DpomFile=${pomPath} \\
+            -Dpackaging=${projectInfo.packaging}
     """
     
-    echo "✅ 制品部署成功!"
-        
+    echo "✅ 制品 ${projectInfo.fullName} 部署成功!"
 }
