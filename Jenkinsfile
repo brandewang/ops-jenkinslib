@@ -6,6 +6,7 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
+def upload = new Upload()
 
 // ========== 配置变量 ==========
 def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git'
@@ -16,7 +17,7 @@ def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
 def app = ['build_type': 'maven', 
-            'artifact_upload': true, 'artifact_upload_url': 'http://dxnexus.ciicsh.com/repository/maven-releases/', 'artifact_upload_repoid': 'mymaven','artifact_file':'demo-0.0.1-SNAPSHOT.jar', 
+            'artifact_upload': true, 'artifact_upload_url': 'http://dxnexus.ciicsh.com/repository/maven-releases/', 'artifact_upload_repoid': 'mymaven', 
             'image_upload': false]
 
 try {
@@ -129,6 +130,9 @@ pipeline {
                     
                     dir('code') {
                         // 上传到 Maven 仓库
+                        def mavenProjectInfo = getMavenProjectInfo(pomPath = 'pom.xml')
+                        artifact_file = "${mavenProjectInfo.info.jarFile}"
+
                         sh """
                             mvn deploy:deploy-file \
                             -DgeneratePom=false \
@@ -136,10 +140,9 @@ pipeline {
                             -Dfile=target/${app.artifact_file} \
                             -Durl=${app.artifact_upload_url} \
                             -DpomFile=pom.xml 
-                        """
-                        
-                        echo "✅ 制品上传完成"
+                        """                      
                     }
+                    echo "✅ 制品上传完成"
                 }
             }
         }

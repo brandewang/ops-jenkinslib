@@ -21,7 +21,7 @@ def SonarJava(projectName, groupName){
     }
 }
 
-def SonarJava(projectName, groupName){
+def Sonar(projectName, groupName){
     withCredentials([string(credentialsId: '', variable: 'AUTH_TOKEN')]){
         sh """
             sonar-scanner -Dsonar.host.url=http://192.168.0.1:9000 \
