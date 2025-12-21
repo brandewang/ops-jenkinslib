@@ -33,12 +33,20 @@ def getMavenProjectInfo(pomPath = 'pom.xml') {
     return info
 }
 
-def deployMavenArtifact(repoUrl='http://dxnexus.ciicsh.com/repository/maven-releases/', 
-                       repoId='mymaven', 
-                       pomPath = 'pom.xml') {
+def deployMavenArtifact(repoUrl, repoId='mymaven', pomPath = 'pom.xml') {
     
     // 获取项目信息
     def projectInfo = getMavenProjectInfo(pomPath)
+
+    def targetRepoUrl = repoUrl
+    if (!targetRepoUrl) {
+        if (projectInfo.version.toUpperCase().contains('SNAPSHOT')) {
+            // SNAPSHOT 版本 → snapshots 仓库
+            targetRepoUrl = 'http://dxnexus.ciicsh.com/repository/maven-snapshots/'
+        } else {
+            // Release 版本 → releases 仓库
+            targetRepoUrl = 'http://dxnexus.ciicsh.com/repository/maven-releases/'
+        }
     
     echo "📦 部署信息:"
     echo "  GroupId: ${projectInfo.groupId}"
@@ -59,7 +67,7 @@ def deployMavenArtifact(repoUrl='http://dxnexus.ciicsh.com/repository/maven-rele
             -DgeneratePom=false \\
             -DrepositoryId=${repoId} \\
             -Dfile=${projectInfo.filePath} \\
-            -Durl=${repoUrl} \\
+            -Durl=${targetRepoUrl} \\
             -DpomFile=${pomPath} \\
             -Dpackaging=${projectInfo.packaging}
     """
