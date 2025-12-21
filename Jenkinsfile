@@ -41,6 +41,24 @@ try {
 
 pipeline {
     agent { label "build" }
+
+    triggers {
+        GenericTrigger(
+            causeString: 'Generic Cause',
+            genericVariables: [
+                [
+                    defaultValue: '',
+                    key: 'WebhookData',
+                    regexpFilter: '',
+                    value: '$'
+                ]
+            ],
+            regexpFilterExpression: '',
+            regexpFilterText: '',
+            token: 'devops03-maven-service-lib',
+            tokenCredentialId: ''
+        )
+    }
     options {
         skipDefaultCheckout true
         timestamps()
