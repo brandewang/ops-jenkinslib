@@ -42,7 +42,8 @@ try {
 pipeline {
     agent { label "build" }
     options {
-        skipDefaultCheckout true
+        skipDefaultCheckout true，
+        timestamps()
     }
 
     parameters {
@@ -119,7 +120,6 @@ pipeline {
         stage('Upload Artifact') {
             when {
                 expression { 
-                    // 条件1：参数控制
                     app.artifact_upload == true 
                 }
             }
