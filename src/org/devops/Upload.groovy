@@ -47,6 +47,7 @@ def deployMavenArtifact(repoUrl, repoId='mymaven', pomPath = 'pom.xml') {
             // Release 版本 → releases 仓库
             targetRepoUrl = 'http://dxnexus.ciicsh.com/repository/maven-releases/'
         }
+    }
     
     echo "📦 部署信息:"
     echo "  GroupId: ${projectInfo.groupId}"
