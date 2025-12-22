@@ -17,7 +17,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'artifact_upload': true,'image_upload': false]
+def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true,'image_upload': false]
 
 try {
     //gitlab传递的数据
@@ -119,7 +119,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        build.CodeBuild("${app.build_type}")
+                        build.CodeBuild("${app.build_type}","${app.module}")
                         sh "ls -l target/"
                     }
                 }
@@ -143,10 +143,10 @@ pipeline {
                 }
             }
             steps {
-                script {                    
-                    dir('code') {
+                dir('code') {
+                    script {                                       
                         // 上传到 Maven 仓库
-                        upload.deployMavenArtifact()                 
+                        upload.deployMavenArtifact("${app.module}")                 
                     }
 
                 }

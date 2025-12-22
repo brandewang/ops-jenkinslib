@@ -43,7 +43,7 @@ def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
     return info
 }
 
-def deployMavenArtifact(repoUrl='', repoId='mymaven', pomPath='pom.xml', module='') {
+def deployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xml', ) {
     
     // 获取项目信息
     if (module) {

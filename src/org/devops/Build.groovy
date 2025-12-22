@@ -1,8 +1,13 @@
 package org.devops
 
 //Maven
-def MavenBuild(){
-    sh "mvn clean package -DskipTests -s settings.xml"
+def MavenBuild(module){
+    if(module){
+        sh "mvn clean package -DskipTests -s settings.xml -pl ${module} -am"
+       
+    }else {
+        sh "mvn clean package -DskipTests -s settings.xml"
+    }
 }
 
 //Gradle
@@ -31,10 +36,10 @@ def YarnBuild(){
 }
 
 //Main
-def CodeBuild(type, configPath=""){
+def CodeBuild(type, module='', configPath=""){
     switch(type){
         case "maven":
-            MavenBuild()
+            MavenBuild(module)
             break;
         case "gradle":
             GradleBuild()
