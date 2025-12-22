@@ -120,7 +120,6 @@ pipeline {
                 dir('code'){
                     script {
                         build.CodeBuild("${app.build_type}","${app.module}")
-                        sh "ls -l target/"
                     }
                 }
             }
