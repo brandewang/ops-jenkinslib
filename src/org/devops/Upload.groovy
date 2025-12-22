@@ -1,7 +1,7 @@
 package org.devops
 
 // 分离的函数定义
-def getMavenProjectInfo(pomPath = 'pom.xml') {
+def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
     def info = [:]
     
     info.artifactId = sh(
@@ -32,21 +32,24 @@ def getMavenProjectInfo(pomPath = 'pom.xml') {
     
     
     // 动态构建文件名
-    if(info.finalName) {
-        info.fileName = "${info.finalName}.${info.packaging}"
+    info.fileName = "${info.finalName}.${info.packaging}"
+    if module {
+        info.filePath = "${module}/target/${info.fileName}"
     } else {
-        info.fileName = "${info.artifactId}-${info.version}.${info.packaging}"
+        info.filePath = "target/${info.fileName}"
     }
-    info.filePath = "target/${info.fileName}"
     info.fullName = "${info.groupId}:${info.artifactId}:${info.version}"
     
     return info
 }
 
-def deployMavenArtifact(repoUrl='', repoId='mymaven', pomPath = 'pom.xml') {
+def deployMavenArtifact(repoUrl='', repoId='mymaven', pomPath='pom.xml', module='') {
     
     // 获取项目信息
-    def projectInfo = getMavenProjectInfo(pomPath)
+    if module {
+        pomPath="${module}/${pomPath}"
+    }
+    def projectInfo = getMavenProjectInfo(pomPath, module)
 
     def targetRepoUrl = repoUrl
     if (!targetRepoUrl) {
