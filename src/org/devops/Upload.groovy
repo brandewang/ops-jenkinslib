@@ -33,7 +33,7 @@ def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
     
     // 动态构建文件名
     info.fileName = "${info.finalName}.${info.packaging}"
-    if module {
+    if (module) {
         info.filePath = "${module}/target/${info.fileName}"
     } else {
         info.filePath = "target/${info.fileName}"
@@ -46,7 +46,7 @@ def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
 def deployMavenArtifact(repoUrl='', repoId='mymaven', pomPath='pom.xml', module='') {
     
     // 获取项目信息
-    if module {
+    if (module) {
         pomPath="${module}/${pomPath}"
     }
     def projectInfo = getMavenProjectInfo(pomPath, module)
