@@ -10,14 +10,14 @@ def upload = new Upload()
 
 
 // ========== 配置变量 ==========
-def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git'
+def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-web-service.git'
 def DEFAULT_SRC_BRANCH = 'master'
 def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true,'image_upload': false]
+def app = ['build_type': 'npm', 'module': '', 'artifact_upload': false,'image_upload': false]
 
 try {
     //gitlab传递的数据
@@ -55,7 +55,7 @@ pipeline {
             ],
             regexpFilterExpression: '',
             regexpFilterText: '',
-            token: 'devops03-maven-service-lib',
+            token: 'devops03-web-service',
             tokenCredentialId: ''
         )
     }
