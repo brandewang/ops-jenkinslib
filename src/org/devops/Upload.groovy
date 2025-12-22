@@ -19,14 +19,24 @@ def getMavenProjectInfo(pomPath = 'pom.xml') {
         returnStdout: true
     ).trim()
     
+    info.finalName = sh(
+        script: "mvn help:evaluate -Dexpression=project.build.finalName -f ${pomPath} -q -DforceStdout",
+        returnStdout: true
+    ).trim()
+
     // 获取打包类型
     info.packaging = sh(
         script: "mvn help:evaluate -Dexpression=project.packaging -f ${pomPath} -q -DforceStdout",
         returnStdout: true
     ).trim()
     
+    
     // 动态构建文件名
-    info.fileName = "${info.artifactId}-${info.version}.${info.packaging}"
+    if(info.finalName) {
+        info.fileName = "${info.finalName}"
+    } else {
+        info.fileName = "${info.artifactId}-${info.version}.${info.packaging}"
+    }
     info.filePath = "target/${info.fileName}"
     info.fullName = "${info.groupId}:${info.artifactId}:${info.version}"
     
