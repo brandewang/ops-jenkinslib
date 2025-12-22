@@ -33,7 +33,7 @@ def getMavenProjectInfo(pomPath = 'pom.xml') {
     
     // 动态构建文件名
     if(info.finalName) {
-        info.fileName = "${info.finalName}"
+        info.fileName = "${info.finalName}.${info.packaging}"
     } else {
         info.fileName = "${info.artifactId}-${info.version}.${info.packaging}"
     }
