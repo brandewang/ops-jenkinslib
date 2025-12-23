@@ -90,18 +90,25 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 }
 
 //上传制品
-def PushRawArtifacts(repoName, targetDir, filePath, pkgName){
-    withCredentials([usernamePassword(credentialsId: '', passwordVariable: 'TOKEN', usernameVariable: 'USER')]) {
-        sh """
-            curl -X POST "http://192.168.1.200:8081/service/rest/v1/components?repository=${repoName}" \
-            -H "accept: application/json" \
-            -H "Content-Type: multipart/form-data" \
-            -H "raw.directory=${targetDir}" \
-            -H "raw.asset1=@${filePath}/${pkgName};type=application/java-archive" \
-            -H "raw.asset1.filename=${pkgName}" \
-            -u "${USER}":"${TOKEN}"
-        """
-    }
+def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
+    targetDir="${JOB_NAME}/${BUILD_ID}" 
+    if ("${buildType}" == 'maven'){
+        if (module){
+            filePath= "${module}/target"
+        }else {
+            filePath = "target"
+        }
+        pkgName = sh returnStdout: true, script: "cd ${filePath}/ ; ls *.jar;cd -" 
+    }       
+    sh """
+        curl -X POST "http://dxnexus.ciicsh.com/service/rest/v1/components?repository=${repoName}" \
+        -H "accept: application/json" \
+        -H "Content-Type: multipart/form-data" \
+        -H "raw.directory=${targetDir}" \
+        -H "raw.asset1=@${filePath}/${pkgName}" \
+        -H "raw.asset1.filename=${pkgName}" \
+        -u "admin":"S_OjBYy14J"
+    """
 }
 
 //上传镜像

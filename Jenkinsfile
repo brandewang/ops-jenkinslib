@@ -18,7 +18,7 @@ def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-maven-servie']
+def app = ['build_type': 'maven', 'module': '', 'maven_deploy': true, 'nexus_push': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-maven-servie']
 
 try {
     //gitlab传递的数据
@@ -136,13 +136,17 @@ pipeline {
             }
         }
 
-        stage('PushArtifact'){
+        stage('PushArtifacts'){
             steps {
                 dir('code') {
                     script {                                       
                         // 上传到 Maven 仓库
-                        if(app.artifact_upload){
+                        if(app.maven_deploy){
                             artifacts.DeployMavenArtifact(app.module)
+                        }
+                        // 上传到 Nexus raw 仓库
+                        if(app.nexus_push){
+                            artifacts.PushRawArtifacts(app.build_type, app.module)
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.docker_build){
