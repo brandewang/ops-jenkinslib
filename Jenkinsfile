@@ -18,7 +18,7 @@ def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true, 'docker_build': true, 'image_name': 'devops/devops03-maven-servie']
+def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-maven-servie']
 
 try {
     //gitlab传递的数据
@@ -168,14 +168,14 @@ pipeline {
                             docker login ${DEFAULT_HARBOR_URL} -u admin -p 7F#SanTGqG6E
 
                             #构建镜像
-                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG} .
+                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG} .
 
                             #上传镜像
-                            docker push ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
+                            docker push ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG}
 
                             #删除镜像
                             sleep 2
-                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
+                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG}
                         """
                     }
                 }
