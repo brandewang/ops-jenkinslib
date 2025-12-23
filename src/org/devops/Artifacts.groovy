@@ -99,6 +99,7 @@ def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
             filePath = "target"
         }
         pkgName = sh returnStdout: true, script: "cd ${filePath}/ ; ls *.jar;cd -" 
+        pkgName = pkgName.trim()
     }       
     sh """
         ls -l 
