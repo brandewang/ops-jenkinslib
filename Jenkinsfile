@@ -6,7 +6,7 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
-def upload = new Upload()
+def artifacts = new Artifacts()
 
 
 // ========== 配置变量 ==========
@@ -146,7 +146,7 @@ pipeline {
                 dir('code') {
                     script {                                       
                         // 上传到 Maven 仓库
-                        upload.deployMavenArtifact("${app.module}")                 
+                        artifacts.deployMavenArtifact("${app.module}")                 
                     }
 
                 }
