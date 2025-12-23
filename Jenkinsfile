@@ -168,14 +168,14 @@ pipeline {
                             docker login ${DEFAULT_HARBOR_URL} -u admin -p 7F#SanTGqG6E
 
                             #构建镜像
-                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG} .
+                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG} .
 
                             #上传镜像
-                            docker push ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG}
+                            docker push ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG}
 
                             #删除镜像
                             sleep 2
-                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_project}/${image_repo}:${env.IMAGE_TAG}
+                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG}
                         """
                     }
                 }
