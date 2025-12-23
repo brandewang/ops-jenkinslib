@@ -1,7 +1,7 @@
 package org.devops
 
 // 分离的函数定义
-def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
+def GetMavenProjectInfo(pomPath = 'pom.xml',module='') {
     def info = [:]
     
     info.artifactId = sh(
@@ -43,13 +43,13 @@ def getMavenProjectInfo(pomPath = 'pom.xml',module='') {
     return info
 }
 
-def deployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xml') {
+def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xml') {
     
     // 获取项目信息
     if (module) {
         pomPath="${module}/${pomPath}"
     }
-    def projectInfo = getMavenProjectInfo(pomPath, module)
+    def projectInfo = GetMavenProjectInfo(pomPath, module)
 
     def targetRepoUrl = repoUrl
     if (!targetRepoUrl) {

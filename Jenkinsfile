@@ -142,7 +142,7 @@ pipeline {
                     script {                                       
                         // 上传到 Maven 仓库
                         if(app.artifact_upload){
-                            artifacts.deployMavenArtifact(app.module)        
+                            artifacts.DeployMavenArtifact(app.module)
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.docker_build){
@@ -154,7 +154,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always{
             wrap([$class: 'BuildUser']) {
