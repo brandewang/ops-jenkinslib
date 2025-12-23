@@ -17,7 +17,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true,'image_upload': false]
+def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true,'docker_build': true]
 
 try {
     //gitlab传递的数据
@@ -135,7 +135,7 @@ pipeline {
             }
         }
 
-        stage('Upload Artifact') {
+        stage('UploadArtifact'){
             when {
                 expression { 
                     app.artifact_upload == true 
@@ -148,6 +148,22 @@ pipeline {
                         upload.deployMavenArtifact("${app.module}")                 
                     }
 
+                }
+            }
+        }
+
+        stage('DockerBuild'){
+            when {
+                expression {
+                    app.docker_build == true
+                }
+            }
+            steps {
+                dir('code') {
+                    script {
+                        sh "ls -l "
+                        sh "docker ps -a"
+                    }
                 }
             }
         }
