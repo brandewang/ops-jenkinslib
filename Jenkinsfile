@@ -14,10 +14,11 @@ def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service
 def DEFAULT_SRC_BRANCH = 'master'
 def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
+def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true,'docker_build': true]
+def app = ['build_type': 'maven', 'module': '', 'artifact_upload': true, 'docker_build': true, 'image_name': 'devops/devops03-maven-servie']
 
 try {
     //gitlab传递的数据
@@ -110,7 +111,7 @@ pipeline {
             steps {
                 script {
                     echo "${env.WORKSPACE}"
-                    sh "cp ${env.WORKSPACE}/config/${env.JOB_NAME}/* ${env.WORKSPACE}/code/"
+                    sh "cp -r ${env.WORKSPACE}/config/${env.JOB_NAME}/* ${env.WORKSPACE}/code/"
                 }
             }
         }
@@ -159,10 +160,19 @@ pipeline {
                 }
             }
             steps {
-                dir('code') {
+                dir("code/${app.module}") {
                     script {
-                        sh "ls -l "
-                        sh "docker ps -a"
+
+                        sh """
+                            #登录镜像仓库
+                            docker login ${DEFAULT_HARBOR_URL} -u admin -p 7F#SanTGqG6E
+
+                            #构建镜像
+                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
+
+                            #上传镜像
+                            docker push ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
+                        """
                     }
                 }
             }
