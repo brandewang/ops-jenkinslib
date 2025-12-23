@@ -116,7 +116,7 @@ pipeline {
             }
         }
 
-        stage("Build"){
+        stage("CodeBuild"){
             steps {
                 dir('code'){
                     script {
@@ -136,7 +136,7 @@ pipeline {
             }
         }
 
-        stage('Artifact'){
+        stage('PushArtifact'){
             steps {
                 dir('code') {
                     script {                                       
