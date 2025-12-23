@@ -92,15 +92,20 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 //上传制品
 def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
     targetDir="/${JOB_NAME}/${BUILD_ID}" 
-    if ("${buildType}" == 'maven'){
-        if (module){
-            filePath= "${module}/target"
-        }else {
-            filePath = "target"
-        }
-        pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
-        pkgName = pkgName.trim()  // 关键！去掉换行符
-    }       
+    switch(buildType){
+        case "maven":
+            if (module){
+                filePath= "${module}/target"
+            }else {
+                filePath = "target"
+            }
+            pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
+            pkgName = pkgName.trim()  // 关键！去掉换行符
+            break;
+        default:
+            error: "No such tools ... [maven/]"
+            break;
+    }  
     sh """
         ls -l 
         curl -X POST "http://dxnexus.ciicsh.com/service/rest/v1/components?repository=${repoName}" \\
