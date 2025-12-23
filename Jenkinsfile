@@ -172,6 +172,10 @@ pipeline {
 
                             #上传镜像
                             docker push ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
+
+                            #删除镜像
+                            sleep 2
+                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_name}:${env.IMAGE_TAG}
                         """
                     }
                 }

@@ -32,7 +32,7 @@ def GetCode(srcUrl, branchName){
     if (isTag) {
         tag = branchName - 'refs/tags/'
     } else {
-        tag = commitId.substring(0, 8)
+        tag = "${branchName}-${commitId.substring(0, 8)}"
     }
 
     return [
