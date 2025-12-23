@@ -91,7 +91,7 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 
 //上传制品
 def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
-    targetDir="${JOB_NAME}/${BUILD_ID}" 
+    targetDir="/${JOB_NAME}/${BUILD_ID}" 
     if ("${buildType}" == 'maven'){
         if (module){
             filePath= "${module}/target"
