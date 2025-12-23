@@ -101,12 +101,12 @@ def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
         pkgName = sh returnStdout: true, script: "cd ${filePath}/ ; ls *.jar;cd -" 
     }       
     sh """
-        curl -X POST "http://dxnexus.ciicsh.com/service/rest/v1/components?repository=${repoName}" \
-        -H "accept: application/json" \
-        -H "Content-Type: multipart/form-data" \
-        -H "raw.directory=${targetDir}" \
-        -H "raw.asset1=@${filePath}/${pkgName}" \
-        -H "raw.asset1.filename=${pkgName}" \
+        curl -X POST "http://dxnexus.ciicsh.com/service/rest/v1/components?repository=${repoName}" \\
+        -H "accept: application/json" \\
+        -H "Content-Type: multipart/form-data" \\
+        -H "raw.directory=${targetDir}" \\
+        -H "raw.asset1=@${filePath}/${pkgName}" \\
+        -H "raw.asset1.filename=${pkgName}" \\
         -u "admin":"S_OjBYy14J"
     """
 }
