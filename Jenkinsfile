@@ -136,52 +136,25 @@ pipeline {
             }
         }
 
-        stage('UploadArtifact'){
-            when {
-                expression { 
-                    app.artifact_upload == true 
-                }
-            }
+        stage('Artifact'){
             steps {
                 dir('code') {
                     script {                                       
                         // 上传到 Maven 仓库
-                        artifacts.deployMavenArtifact("${app.module}")                 
+                        if(app.artifact_upload){
+                            artifacts.deployMavenArtifact(app.module)        
+                        }
+                        // 上传到 Harbor 镜像仓库
+                        if(app.docker_build){
+                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.image_project, app.image_repo, env.IMAGE_TAG)
+                        }     
                     }
 
-                }
-            }
-        }
-
-        stage('DockerBuild'){
-            when {
-                expression {
-                    app.docker_build == true
-                }
-            }
-            steps {
-                dir("code/${app.module}") {
-                    script {
-
-                        sh """
-                            #登录镜像仓库
-                            docker login ${DEFAULT_HARBOR_URL} -u admin -p 7F#SanTGqG6E
-
-                            #构建镜像
-                            docker build -t ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG} .
-
-                            #上传镜像
-                            docker push ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG}
-
-                            #删除镜像
-                            sleep 2
-                            docker rmi ${DEFAULT_HARBOR_URL}/${app.image_project}/${app.image_repo}:${env.IMAGE_TAG}
-                        """
-                    }
                 }
             }
         }
     }
+    
     post {
         always{
             wrap([$class: 'BuildUser']) {

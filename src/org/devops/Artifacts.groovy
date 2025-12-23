@@ -88,3 +88,36 @@ def deployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
     
     echo "✅ 制品 ${projectInfo.fullName} 部署成功!"
 }
+
+//上传制品
+def PushRawArtifacts(repoName, targetDir, filePath, pkgName){
+    withCredentials([usernamePassword(credentialsId: '', passwordVariable: 'TOKEN', usernameVariable: 'USER')]) {
+        sh """
+            curl -X POST "http://192.168.1.200:8081/service/rest/v1/components?repository=${repoName}" \
+            -H "accept: application/json" \
+            -H "Content-Type: multipart/form-data" \
+            -H "raw.directory=${targetDir}" \
+            -H "raw.asset1=@${filePath}/${pkgName};type=application/java-archive" \
+            -H "raw.asset1.filename=${pkgName}" \
+            -u "${USER}":"${TOKEN}"
+        """
+    }
+}
+
+//上传镜像
+def PushDockerArtifacts(harbor_url, image_project, image_repo, image_tag){
+    sh """
+        #登录镜像仓库
+        docker login ${harbor_url} -u admin -p 7F#SanTGqG6E
+
+        #构建镜像
+        docker build -t ${harbor_url}/${image_project}/${image_repo}:${image_tag} .
+
+        #上传镜像
+        docker push ${harbor_url}/${image_project}/${image_repo}:${image_tag}
+
+        #删除镜像
+        sleep 2
+        docker rmi ${harbor_url}/${image_project}/${image_repo}:${image_tag}
+    """
+}
