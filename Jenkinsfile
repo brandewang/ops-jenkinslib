@@ -100,7 +100,7 @@ pipeline {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
                         env.SRC_COMMIT_TITLE = checkoutResult.title
-                        env.IMAGE_TAG = checkoutResult.tag
+                        env.ARTIFACT_VERSION = checkoutResult.tag
                     }
                 }
 
@@ -150,7 +150,7 @@ pipeline {
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.docker_build){
-                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.image_project, app.image_repo, env.IMAGE_TAG)
+                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.image_project, app.image_repo, env.ARTIFACT_VERSION)
                         }     
                     }
 

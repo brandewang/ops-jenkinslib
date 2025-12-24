@@ -90,22 +90,24 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 }
 
 //上传制品
-def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
+def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
     def projectName="${JOB_NAME}".split("/")[-1]
-    def targetDir="/${JOB_NAME}/${BUILD_ID}"
+    def targetDir="/${JOB_NAME}/${env.ARTIFACT_VERSION}"
+    def version="${env.ARTIFACT_VERSION}"
     switch(buildType){
         case "maven":
-            if (module){
-                def filePath= "${module}/target"
-            }else {
-                def filePath = "target"
-            }
-            def pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
-            pkgName = pkgName.trim()  // 关键！去掉换行符
+            def filePath = module ? "${module}/target" : "target"
+            def pkgName="${projectName}-${version}.jar"
+            def opkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
+            opkgName = opkgName.trim()  // 关键！去掉换行符
+            sh """
+                cd ${filePath}
+                mv ${opkgName} ${pkgName}
+            """
             break;
         case "npm":
             def filePath="dist"
-            def pkgName="${projectName}-${BUILD_ID}.tar.gz"
+            def pkgName="${projectName}-${version}.tar.gz"
             sh """
                 cd ${filePath}
                 tar zcf ${pkgName} *
