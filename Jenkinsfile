@@ -18,7 +18,7 @@ def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'maven', 'module': '', 'maven_deploy': true, 'nexus_push': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-maven-servie']
+def app = ['build_type': 'maven', 'module': '', 'maven_deploy': true, 'nexus_push': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-maven-service']
 
 try {
     //gitlab传递的数据
