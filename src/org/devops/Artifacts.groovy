@@ -96,9 +96,9 @@ def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
     def version="${env.ARTIFACT_VERSION}"
     switch(buildType){
         case "maven":
-            def filePath = module ? "${module}/target" : "target"
-            def pkgName="${projectName}-${version}.jar"
-            def opkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
+            filePath = module ? "${module}/target" : "target"
+            pkgName="${projectName}-${version}.jar"
+            opkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
             opkgName = opkgName.trim()  // 关键！去掉换行符
             sh """
                 cd ${filePath}
@@ -106,8 +106,8 @@ def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
             """
             break;
         case "npm":
-            def filePath="dist"
-            def pkgName="${projectName}-${version}.tar.gz"
+            filePath="dist"
+            pkgName="${projectName}-${version}.tar.gz"
             sh """
                 cd ${filePath}
                 tar zcf ${pkgName} *
