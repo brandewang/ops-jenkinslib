@@ -105,7 +105,7 @@ def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
             break;
         case "npm":
             filePath="dist"
-            pkgName="${filePath}/${projectName}-${BUILD_ID}.tar.gz"
+            pkgName="${projectName}-${BUILD_ID}.tar.gz"
             sh """
                 cd ${filePath}
                 tar zcf ${pkgName} *
