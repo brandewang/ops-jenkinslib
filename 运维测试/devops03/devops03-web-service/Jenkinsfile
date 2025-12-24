@@ -47,15 +47,12 @@ pipeline {
         GenericTrigger(
             causeString: 'Generic Cause',
             genericVariables: [
-                [
-                    defaultValue: '',
-                    key: 'WebhookData',
-                    regexpFilter: '',
-                    value: '$'
-                ]
+                [defaultValue: '',key: 'WebhookData',regexpFilter: '',value: '$'],
+                [defaultValue: '', key: 'before', regexpFilter: '', value: '$.before'], 
+                [defaultValue: '', key: 'after', regexpFilter: '', value: '$.after']
             ],
-            regexpFilterExpression: '',
-            regexpFilterText: '',
+            regexpFilterExpression: '^(?!0{40}).{40}\\s(?!0{40}).{40}$',
+            regexpFilterText: '$before $after',
             token: 'devops03-web-service',
             tokenCredentialId: ''
         )
