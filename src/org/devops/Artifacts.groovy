@@ -102,7 +102,7 @@ def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
             opkgName = opkgName.trim()  // 关键！去掉换行符
             sh """
                 cd ${filePath}
-                mv ${opkgName} ${pkgName}
+                cp ${opkgName} ${pkgName}
             """
             break;
         case "npm":
