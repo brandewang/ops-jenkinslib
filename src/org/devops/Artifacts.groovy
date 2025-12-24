@@ -91,7 +91,8 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 
 //上传制品
 def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
-    targetDir="/${JOB_NAME}/${BUILD_ID}" 
+    projectName="${JOB_NAME}".split("/")[-1]
+    targetDir="/${JOB_NAME}/${BUILD_ID}"
     switch(buildType){
         case "maven":
             if (module){
@@ -102,6 +103,13 @@ def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
             pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
             pkgName = pkgName.trim()  // 关键！去掉换行符
             break;
+        case "npm":
+            filePath="dist"
+            pkgName="${filePath}/${projectName}-${BUILD_ID}.tar.gz"
+            sh """
+                cd ${filePath}
+                tar zcf ${pkgName} *
+            """
         default:
             error: "No such tools ... [maven/]"
             break;

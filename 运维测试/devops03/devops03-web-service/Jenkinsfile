@@ -6,7 +6,7 @@ def checkout = new Checkout()
 def build = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
-def upload = new Upload()
+def artifacts = new Artifacts()
 
 
 // ========== 配置变量 ==========
@@ -14,10 +14,11 @@ def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-web-service.g
 def DEFAULT_SRC_BRANCH = 'master'
 def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
+def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'npm', 'module': '', 'artifact_upload': false,'image_upload': false]
+def app = ['build_type': 'npm', 'nexus_push': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-web-servie']
 
 try {
     //gitlab传递的数据
@@ -110,12 +111,12 @@ pipeline {
             steps {
                 script {
                     echo "${env.WORKSPACE}"
-                    sh "cp ${env.WORKSPACE}/config/${env.JOB_NAME}/* ${env.WORKSPACE}/code/"
+                    sh "cp -r ${env.WORKSPACE}/config/${env.JOB_NAME}/* ${env.WORKSPACE}/code/"
                 }
             }
         }
 
-        stage("Build"){
+        stage("CodeBuild"){
             steps {
                 dir('code'){
                     script {
@@ -135,23 +136,29 @@ pipeline {
             }
         }
 
-        stage('Upload Artifact') {
-            when {
-                expression { 
-                    app.artifact_upload == true 
-                }
-            }
+        stage('PushArtifacts'){
             steps {
                 dir('code') {
                     script {                                       
                         // 上传到 Maven 仓库
-                        upload.deployMavenArtifact("${app.module}")                 
+                        if(app.maven_deploy){
+                            artifacts.DeployMavenArtifact(app.module)
+                        }
+                        // 上传到 Nexus raw 仓库
+                        if(app.nexus_push){
+                            artifacts.PushRawArtifacts(app.build_type, app.module)
+                        }
+                        // 上传到 Harbor 镜像仓库
+                        if(app.docker_build){
+                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.image_project, app.image_repo, env.IMAGE_TAG)
+                        }     
                     }
 
                 }
             }
         }
     }
+
     post {
         always{
             wrap([$class: 'BuildUser']) {
