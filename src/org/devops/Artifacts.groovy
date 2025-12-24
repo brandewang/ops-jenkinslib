@@ -91,21 +91,21 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 
 //上传制品
 def PushRawArtifacts(buildType, module, repoName='mylocalrepo'){
-    projectName="${JOB_NAME}".split("/")[-1]
-    targetDir="/${JOB_NAME}/${BUILD_ID}"
+    def projectName="${JOB_NAME}".split("/")[-1]
+    def targetDir="/${JOB_NAME}/${BUILD_ID}"
     switch(buildType){
         case "maven":
             if (module){
-                filePath= "${module}/target"
+                def filePath= "${module}/target"
             }else {
-                filePath = "target"
+                def filePath = "target"
             }
-            pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
+            def pkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
             pkgName = pkgName.trim()  // 关键！去掉换行符
             break;
         case "npm":
-            filePath="dist"
-            pkgName="${projectName}-${BUILD_ID}.tar.gz"
+            def filePath="dist"
+            def pkgName="${projectName}-${BUILD_ID}.tar.gz"
             sh """
                 cd ${filePath}
                 tar zcf ${pkgName} *
