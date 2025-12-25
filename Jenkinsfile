@@ -141,6 +141,10 @@ pipeline {
                             artifacts.DeployMavenArtifact(app.module)
                         }
                         // 上传到 Nexus raw 仓库
+                        // 更完整的语义化版本验证 (SemVer)
+                        // def isVersionValid = env.ARTIFACT_VERSION ==~ /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/
+                        // 或者自定义的简单版本号验证
+                        // def isVersionValid = env.ARTIFACT_VERSION ==~ /^v?\d+\.\d+\.\d+(-\w+)?$/
                         if(app.nexusPush){
                             artifacts.PushRawArtifacts(app.project, app.appName, app.appType, app.module)
                         }
