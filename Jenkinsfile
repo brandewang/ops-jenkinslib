@@ -142,7 +142,7 @@ pipeline {
                         }
                         // 上传到 Nexus raw 仓库
                         if(app.nexusPush){
-                            artifacts.PushRawArtifacts(app.build_type, app.module)
+                            artifacts.PushRawArtifacts(app.appType, app.module)
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.dockerBuild){
