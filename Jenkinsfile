@@ -168,7 +168,8 @@ pipeline {
                       wait: false  // 并行执行
             }
         }
-
+    }
+    
     post {
         always{
             wrap([$class: 'BuildUser']) {
