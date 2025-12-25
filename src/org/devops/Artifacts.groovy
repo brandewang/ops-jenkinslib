@@ -90,14 +90,13 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 }
 
 //上传制品
-def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
-    def projectName="${JOB_NAME}".split("/")[-1]
-    def targetDir="/${JOB_NAME}/${env.ARTIFACT_VERSION}"
+def PushRawArtifacts(project, appName, appType, module='', repoName='mylocalrepo'){
+    def targetDir="/${project}/${appName}/${env.ARTIFACT_VERSION}"
     def version="${env.ARTIFACT_VERSION}"
-    switch(buildType){
+    switch(appType){
         case "maven":
             filePath = module ? "${module}/target" : "target"
-            pkgName="${projectName}-${version}.jar"
+            pkgName="${appName}-${version}.jar"
             opkgName = sh returnStdout: true, script: "ls ${filePath}/*.jar | head -1 | xargs basename"
             opkgName = opkgName.trim()  // 关键！去掉换行符
             sh """
@@ -107,7 +106,7 @@ def PushRawArtifacts(buildType, module='', repoName='mylocalrepo'){
             break;
         case "npm":
             filePath="dist"
-            pkgName="${projectName}-${version}.tar.gz"
+            pkgName="${appName}-${version}.tar.gz"
             sh """
                 cd ${filePath}
                 tar zcf ${pkgName} *

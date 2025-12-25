@@ -142,7 +142,7 @@ pipeline {
                         }
                         // 上传到 Nexus raw 仓库
                         if(app.nexusPush){
-                            artifacts.PushRawArtifacts(app.appType, app.module)
+                            artifacts.PushRawArtifacts(app.project, app.appName, app.appType, app.module)
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.dockerBuild){
@@ -185,8 +185,6 @@ pipeline {
                     env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
                     notified.SendEmail("${env.USER_EMAIL}")
 
-                    //测试
-                    println("${env.IMAGE_TAG}")
                 }
             }
         }        
