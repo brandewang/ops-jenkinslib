@@ -59,7 +59,7 @@ def PullArtifacts(version, project, appName, appType, repoName='mylocalrepo'){
         type="tar.gz"
     }
 
-    pkgPath = "${repoUrl}/${project}/${appName}/${version}/${projectName}-${version}.${type}"
+    pkgPath = "${repoUrl}/${project}/${appName}/${version}/${appName}-${version}.${type}"
     sh """
         wget --http-user=admin --http-passwd=S_OjBYy14J ${pkgPath}
     """
