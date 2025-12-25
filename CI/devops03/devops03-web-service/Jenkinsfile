@@ -52,7 +52,7 @@ pipeline {
             ],
             regexpFilterExpression: '^(?!0{40}).{40}$',
             regexpFilterText: '$after',
-            token: 'devops03-web-service-lib',
+            token: 'devops03-web-service',
             tokenCredentialId: ''
         )
     }
