@@ -157,7 +157,17 @@ pipeline {
                 }
             }
         }
-    }
+
+        stage('Trigger Downstream') {
+            steps {
+                // 触发多个下游任务
+                build job: 'TST/devops03/devops03-maven-service',
+                    parameters: [
+                        string(name: 'releaseVersion', value: env.ARTIFACT_VERSION)
+                    ],
+                    wait: false  // 并行执行
+            }
+        }
 
     post {
         always{
