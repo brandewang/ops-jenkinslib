@@ -3,7 +3,7 @@ import org.devops.*
 
 // ========== 工具类初始化 ==========
 def checkout = new Checkout()
-def build = new Build()
+def buildTool = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
 def artifacts = new Artifacts()
@@ -116,7 +116,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        build.CodeBuild("${app.appType}","${app.module}")
+                        buildTool.CodeBuild("${app.appType}","${app.module}")
                     }
                 }
             }
