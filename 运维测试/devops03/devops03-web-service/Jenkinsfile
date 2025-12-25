@@ -18,7 +18,7 @@ def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['build_type': 'npm', 'nexus_push': true, 'docker_build': true, 'image_project': 'devops', 'image_repo': 'devops03-web-service']
+def app = ['project':'devops', 'appName':'devops03-web-service', 'appType': 'npm', 'nexusPush': true, 'dockerBuild': true]
 
 try {
     //gitlab传递的数据
@@ -52,7 +52,7 @@ pipeline {
             ],
             regexpFilterExpression: '^(?!0{40}).{40}$',
             regexpFilterText: '$after',
-            token: 'devops03-web-service',
+            token: 'devops03-web-service-lib',
             tokenCredentialId: ''
         )
     }
@@ -116,7 +116,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        build.CodeBuild("${app.build_type}","${app.module}")
+                        build.CodeBuild("${app.appType}","${app.module}")
                     }
                 }
             }
@@ -126,7 +126,7 @@ pipeline {
             steps {
                 dir('code'){
                     script {
-                        unittest.CodeTest("${app.build_type}")
+                        unittest.CodeTest("${app.appType}")
                     }
                 }
             }
@@ -137,16 +137,16 @@ pipeline {
                 dir('code') {
                     script {                                       
                         // 上传到 Maven 仓库
-                        if(app.maven_deploy){
+                        if(app.mavenDeploy){
                             artifacts.DeployMavenArtifact(app.module)
                         }
                         // 上传到 Nexus raw 仓库
-                        if(app.nexus_push){
+                        if(app.nexusPush){
                             artifacts.PushRawArtifacts(app.build_type, app.module)
                         }
                         // 上传到 Harbor 镜像仓库
-                        if(app.docker_build){
-                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.image_project, app.image_repo, env.ARTIFACT_VERSION)
+                        if(app.dockerBuild){
+                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.project, app.appName, env.ARTIFACT_VERSION)
                         }     
                     }
 
