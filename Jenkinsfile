@@ -160,11 +160,18 @@ pipeline {
 
         stage('Trigger Downstream') {
             steps {
-                // 触发多个下游任务
-                script{
+                script {
                     def jobs = ['TST/devops03/devops03-maven-service']
-                    jobs.each {job ->  build(job:job, parameters: [string(name: 'releaseVersion', value: "${env.ARTIFACT_VERSION}")])}  
-                }                  
+                    jobs.each { job -> 
+                        // 正确的调用方式
+                        build(
+                            job: job,
+                            parameters: [
+                                string(name: 'releaseVersion', value: "${env.ARTIFACT_VERSION}")
+                            ]
+                        )
+                    }
+                }
             }
         }
     }
