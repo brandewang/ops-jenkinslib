@@ -1,0 +1,66 @@
+
+def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven']
+
+pipeline {
+    agent { label "build"}
+
+    options {
+        skipDefaultCheckout true
+        timestamps()
+    }
+
+    parameters {
+        string 'releaseVersion'
+    }
+
+    stages{
+        stage("PullArtifacts"){
+            steps{
+                script{
+                    PullArtifacts("${env.releaseVersion}", app.project, app.appName, app.appType)
+                }
+            }
+        }
+
+        stage("DeployHost"){
+            steps{
+                script{
+                    println("DeployHost")                       
+                }
+            }
+        }
+
+        stage("ServiceCtrl"){
+            steps{
+                script{
+                    println("ServiceCtrl")                       
+                }
+            }
+        }
+
+        stage("HealthCheck"){
+            steps{
+                script{
+                    println("HealthCheck")
+                }
+            }
+        }
+    }
+}
+
+
+def PullArtifacts(version, project, appName, appType, repoName='mylocalrepo'){
+    repoUrl = "http://dxnexus.ciicsh.com/repository/${repoName}/"
+
+    if ("${appType}" == "maven"){
+        type="jar"
+    }
+    if ("${appType}" == "npm"){
+        type="tar.gz"
+    }
+
+    pkgPath = "${repoUrl}/${project}/${appName}/${version}/${projectName}-${version}.${type}"
+    sh """
+        wget --http-user=admin --http-passwd=S_OjBYy14J ${pkgPath}
+    """
+}
