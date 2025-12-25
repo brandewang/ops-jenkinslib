@@ -163,12 +163,12 @@ pipeline {
                 script {
                     def jobs = ['TST/devops03/devops03-maven-service']
                     jobs.each { job -> 
-                        // 正确的调用方式
                         build(
                             job: job,
                             parameters: [
-                                string(name: 'releaseVersion', value: "${env.ARTIFACT_VERSION}")
-                            ]
+                                string(name: 'releaseVersion', value: env.ARTIFACT_VERSION)
+                            ],
+                            wait: false
                         )
                     }
                 }
