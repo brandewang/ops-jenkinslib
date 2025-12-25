@@ -20,6 +20,9 @@ def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 // ========== 应用变量 ==========
 def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'module': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true]
 
+// ========== 下游任务 ==========
+def jobs = ['TST/devops03/devops03-maven-service']
+
 try {
     //gitlab传递的数据
     println("${WebhookData}")
@@ -161,7 +164,6 @@ pipeline {
         stage('Trigger Downstream') {
             steps {
                 script {
-                    def jobs = ['TST/devops03/devops03-maven-service']
                     jobs.each { job -> 
                         build(
                             job: job,
