@@ -145,7 +145,9 @@ def PullRawArtifacts(version, project, appName, appType, repoName='mylocalrepo')
 }
 
 //上传镜像
-def PushDockerArtifacts(harbor_url, image_project, image_repo, image_tag){
+def PushDockerArtifacts(image_project, image_repo, image_tag, harbor_url){
+    def harbor_url = harbor_url ? "${harbor_url}" : "prd-ops-harbor03.ciicsh.com"
+
     sh """
         #登录镜像仓库
         docker login ${harbor_url} -u admin -p 7F#SanTGqG6E

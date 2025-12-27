@@ -14,7 +14,6 @@ def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service
 def DEFAULT_SRC_BRANCH = 'master'
 def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
-def DEFAULT_HARBOR_URL = 'prd-ops-harbor03.ciicsh.com'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
@@ -153,7 +152,7 @@ pipeline {
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.dockerBuild){
-                            artifacts.PushDockerArtifacts(DEFAULT_HARBOR_URL, app.project, app.appName, env.ARTIFACT_VERSION)
+                            artifacts.PushDockerArtifacts(app.project, app.appName, env.ARTIFACT_VERSION)
                         }     
                     }
 
