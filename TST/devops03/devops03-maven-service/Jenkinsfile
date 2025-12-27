@@ -4,13 +4,14 @@ import org.devops.*
 // ========== 工具类初始化 ==========
 def artifacts = new Artifacts()
 def notified = new Notified()
+def deploy = new Deploy()
 
 
 // ========== 配置变量 ==========
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven']
+def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployHosts': ['172.24.25.65', ], 'targetDir':'/opt', 'deployType': 'stand']
 
 pipeline {
     agent { label "build"}
@@ -25,37 +26,28 @@ pipeline {
     }
 
     stages{
-        stage("PullArtifacts"){
+        // stage("PullArtifacts"){
+        //     steps{
+        //         script{
+        //             artifacts.PullRawArtifacts("${env.releaseVersion}", app.project, app.appName, app.appType)
+        //         }
+        //     }
+        // }
+
+        stage("Deploy"){
             steps{
                 script{
-                    artifacts.PullRawArtifacts("${env.releaseVersion}", app.project, app.appName, app.appType)
+                    deploy.DeployByAnsible(
+                        deployHosts: app.deployHosts,
+                        targetDir: app.targetDir,
+                        appName: app.appName,
+                        releaseVersion: env.releaseVersion,
+                        deployType: app.deployType
+                    )                      
                 }
             }
         }
 
-        stage("DeployHost"){
-            steps{
-                script{
-                    println("DeployHost")                       
-                }
-            }
-        }
-
-        stage("ServiceCtrl"){
-            steps{
-                script{
-                    println("ServiceCtrl")                       
-                }
-            }
-        }
-
-        stage("HealthCheck"){
-            steps{
-                script{
-                    println("HealthCheck")
-                }
-            }
-        }
     }
 
     post {
