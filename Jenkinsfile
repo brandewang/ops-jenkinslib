@@ -182,7 +182,7 @@ pipeline {
             wrap([$class: 'BuildUser']) {
                 script {
                     def causes = currentBuild.getBuildCauses()
-                    def env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
+                    env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
 
                     // 设置构建描述
                     if (env.webhook_commitUser) {
