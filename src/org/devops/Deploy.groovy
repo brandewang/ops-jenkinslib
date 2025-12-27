@@ -72,7 +72,7 @@ private void deployStand(List hosts, String targetDir, String appName, String ve
     
     sh """
         # 使用ansible shell模块执行部署命令
-        ansible ${hostsStr} -i ${hostsStr}  -m shell -a "
+        ansible "${hostsStr}" -i "${hostsStr},"  -m shell -a "
             mkdir -p ${targetDir} &&
             echo '${version}' > ${targetDir}/version.txt &&
             echo '[部署完成] ${appName} ${version} \$(date)' >> ${targetDir}/deploy.log &&
