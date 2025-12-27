@@ -3,6 +3,8 @@ import org.devops.*
 
 // ========== 工具类初始化 ==========
 def artifacts = new Artifacts()
+def notified = new Notified()
+
 
 // ========== 配置变量 ==========
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
