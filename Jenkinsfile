@@ -181,7 +181,7 @@ pipeline {
         always{
             wrap([$class: 'BuildUser']) {
                 script {
-                    def env.causes = currentBuild.getBuildCauses()
+                    env.causes = currentBuild.getBuildCauses()
 
                     // 设置构建描述
                     if (env.webhook_commitUser) {
