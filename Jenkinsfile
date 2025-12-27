@@ -191,7 +191,7 @@ pipeline {
                             Title: ${env.SRC_COMMIT_TITLE}
                             Branch: ${env.webhook_branchName} | Commit: ${env.SRC_COMMIT_ID}
                             Committer: ${env.webhook_commitUser}
-                            Version: ${env.releaseVersion}
+                            Version: ${env.ARTIFACT_VERSION}
                         """.stripIndent().trim()
                         currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
                     } else {
@@ -200,7 +200,7 @@ pipeline {
                             Title: ${env.SRC_COMMIT_TITLE}
                             Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
                             User: ${env.BUILD_USER}
-                            Version: ${env.releaseVersion}
+                            Version: ${env.ARTIFACT_VERSION}
                         """.stripIndent().trim()
                         currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
                     }
