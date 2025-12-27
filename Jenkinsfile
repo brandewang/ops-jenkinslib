@@ -20,7 +20,7 @@ def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'module': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true]
 
 // ========== 下游任务 ==========
-def jobs = []
+def jobs = ['TST/devops03/devops03-maven-service']
 
 try {
     //gitlab传递的数据
