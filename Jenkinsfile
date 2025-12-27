@@ -187,18 +187,18 @@ pipeline {
                         // Webhook 触发
                         currentBuild.description = """                           
                             Title: ${env.SRC_COMMIT_TITLE}
-                            Branch: ${env.webhook_branchName}
+                            Branch: ${env.webhook_branchName} | Commit: ${env.SRC_COMMIT_ID}
                             Committer: ${env.webhook_commitUser}
-                            Commit: ${env.SRC_COMMIT_ID}
+                            Version: ${env.releaseVersion}
                         """.stripIndent().trim()
                         currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
                     } else {
                         // 手动触发
                         currentBuild.description = """                           
                             Title: ${env.SRC_COMMIT_TITLE}
-                            Branch: ${env.SRC_BRANCH}
+                            Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
                             User: ${env.BUILD_USER}
-                            Commit: ${env.SRC_COMMIT_ID}
+                            Version: ${env.releaseVersion}
                         """.stripIndent().trim()
                         currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
                     }

@@ -64,7 +64,7 @@ pipeline {
                 script {
                     // 设置构建描述
                     currentBuild.description = """                           
-                        version: ${env.releaseVersion}
+                        Version: ${env.releaseVersion}
                     """.stripIndent().trim()
                     // currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
                 
