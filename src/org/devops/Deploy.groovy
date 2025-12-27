@@ -33,7 +33,6 @@ package org.devops
 
 // }
 
-#!/usr/bin/env groovy
 
 def DeployByAnsible(Map params) {
     // 检查必需参数
