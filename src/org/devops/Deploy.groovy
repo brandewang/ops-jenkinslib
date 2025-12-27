@@ -51,13 +51,13 @@ def DeployByAnsible(Map params) {
     // 3. 根据类型选择部署方法（traditional改为stand）
     switch(params.deployType) {
         case 'stand':  // 改为stand表示标准/传统部署
-            deployStandCmd(deployHosts, params.targetDir, params.appName, params.releaseVersion)
+            deployStand(deployHosts, params.targetDir, params.appName, params.releaseVersion)
             break
         case 'docker-compose':
-            deployDockerComposeCmd(deployHosts, params.targetDir, params.appName, params.releaseVersion)
+            deployDockerCompose(deployHosts, params.targetDir, params.appName, params.releaseVersion)
             break
         case 'k8s':
-            deployK8sCmd(deployHosts, params.appName, params.releaseVersion, appNs, appKind)
+            deployK8s(deployHosts, params.appName, params.releaseVersion, appNs, appKind)
             break
         default:
             error("不支持的deployType: ${params.deployType}")
