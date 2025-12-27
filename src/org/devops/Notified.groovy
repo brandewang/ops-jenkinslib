@@ -12,6 +12,7 @@ def SendEmail(userEmail){
                     <p><strong>状态:</strong> <span style="color: ${currentBuild.currentResult == 'SUCCESS' ? 'green' : 'red'}; font-weight: bold;">${currentBuild.currentResult}</span></p>
                     <p><strong>时间:</strong> ${new Date().format('yyyy-MM-dd HH:mm:ss')}</p>
                     <p><strong>详情:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p><strong>触发原因:</strong> #${env.causes}</p>
                     <hr>
                     <p style="color: gray; font-size: 12px;">Jenkins 自动通知</p>
                 </body>
