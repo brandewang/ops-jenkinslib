@@ -1,4 +1,13 @@
+@Library("mylib@main") _
+import org.devops.*
 
+// ========== 工具类初始化 ==========
+def artifacts = new Artifacts()
+
+// ========== 配置变量 ==========
+def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
+
+// ========== 应用变量 ==========
 def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven']
 
 pipeline {
@@ -17,7 +26,7 @@ pipeline {
         stage("PullArtifacts"){
             steps{
                 script{
-                    PullArtifacts("${env.releaseVersion}", app.project, app.appName, app.appType)
+                    artifacts.PullRawArtifacts("${env.releaseVersion}", app.project, app.appName, app.appType)
                 }
             }
         }
@@ -46,21 +55,25 @@ pipeline {
             }
         }
     }
+
+    post {
+        always{
+            wrap([$class: 'BuildUser']) {
+                script {
+                    // 设置构建描述
+                    currentBuild.description = """                           
+                        version: ${env.releaseVersion}
+                    """.stripIndent().trim()
+                    // currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
+                
+                    // 发送构建通知
+                    env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+                    notified.SendEmail("${env.USER_EMAIL}")
+
+                }
+            }
+        }        
+    }
 }
 
 
-def PullArtifacts(version, project, appName, appType, repoName='mylocalrepo'){
-    repoUrl = "http://dxnexus.ciicsh.com/repository/${repoName}/"
-
-    if ("${appType}" == "maven"){
-        type="jar"
-    }
-    if ("${appType}" == "npm"){
-        type="tar.gz"
-    }
-
-    pkgPath = "${repoUrl}/${project}/${appName}/${version}/${appName}-${version}.${type}"
-    sh """
-        wget --http-user=admin --http-passwd=S_OjBYy14J ${pkgPath}
-    """
-}

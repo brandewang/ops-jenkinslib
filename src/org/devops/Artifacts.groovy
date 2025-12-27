@@ -127,6 +127,23 @@ def PushRawArtifacts(project, appName, appType, module='', repoName='mylocalrepo
     """
 }
 
+//下载制品
+def PullRawArtifacts(version, project, appName, appType, repoName='mylocalrepo'){
+    repoUrl = "http://dxnexus.ciicsh.com/repository/${repoName}/"
+
+    if ("${appType}" == "maven"){
+        type="jar"
+    }
+    if ("${appType}" == "npm"){
+        type="tar.gz"
+    }
+
+    pkgPath = "${repoUrl}/${project}/${appName}/${version}/${appName}-${version}.${type}"
+    sh """
+        wget --http-user=admin --http-passwd=S_OjBYy14J ${pkgPath}
+    """
+}
+
 //上传镜像
 def PushDockerArtifacts(harbor_url, image_project, image_repo, image_tag){
     sh """
@@ -144,3 +161,5 @@ def PushDockerArtifacts(harbor_url, image_project, image_repo, image_tag){
         docker rmi ${harbor_url}/${image_project}/${image_repo}:${image_tag}
     """
 }
+
+
