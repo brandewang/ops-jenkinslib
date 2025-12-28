@@ -102,10 +102,11 @@ private void deployDockerCompose(List hosts, String targetDir, String project, S
 }
 
 // 3️⃣ Kubernetes部署 (直接使用kubectl)
-private void deployK8s(List contexts, String project, String appName, String version, String namespace, String kind) {
+private void deployK8s(List hosts,  String project, String appName, String version, String namespace, String kind) {
     echo "K8s部署: $appName:$version -> namespace: ${namespace}"
     
-    def imageTag = "registry.com/${appName}:${version}"
+    def hostsStr = hosts.join(',')
+    def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
     
     contexts.each { context ->
         sh """
