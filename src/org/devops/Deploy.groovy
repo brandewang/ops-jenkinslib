@@ -38,6 +38,7 @@ def DeployByAnsible(Map params) {
     // 检查必需参数
     if (!params.deployType) error("缺少必需参数: deployType")
     if (!params.deployHosts) error("缺少必需参数: deployHosts")
+    if (!params.project) error("缺少必需参数: deployHosts")
     if (!params.appName) error("缺少必需参数: appName")
     if (!params.releaseVersion) error("缺少必需参数: releaseVersion")
     // if (!params.targetDir) error("缺少必需参数: targetDir")
@@ -51,20 +52,20 @@ def DeployByAnsible(Map params) {
     // 3. 根据类型选择部署方法（traditional改为stand）
     switch(params.deployType) {
         case 'stand':  // 改为stand表示标准/传统部署
-            deployStand(deployHosts, params.targetDir, params.appName, params.releaseVersion)
+            deployStand(deployHosts, params.targetDir, params.project, params.appName, params.releaseVersion)
             break
         case 'docker-compose':
-            deployDockerCompose(deployHosts, params.targetDir, params.appName, params.releaseVersion)
+            deployDockerCompose(deployHosts, params.targetDir, params.project, params.appName, params.releaseVersion)
             break
         case 'k8s':
-            deployK8s(deployHosts, params.appName, params.releaseVersion, appNs, appKind)
+            deployK8s(deployHosts, params.project, params.appName, params.releaseVersion, appNs, appKind)
             break
         default:
             error("不支持的deployType: ${params.deployType}")
     }
 }
 
-private void deployStand(List hosts, String targetDir, String appName, String version) {
+private void deployStand(List hosts, String targetDir, String project, String appName, String version) {
     echo "标准部署: $appName:$version -> $targetDir"
     
     // 将主机列表转换为逗号分隔的字符串
@@ -82,7 +83,7 @@ private void deployStand(List hosts, String targetDir, String appName, String ve
 }
 
 // 2️⃣ Docker Compose部署 (使用ansible -m shell)
-private void deployDockerCompose(List hosts, String targetDir, String appName, String version) {
+private void deployDockerCompose(List hosts, String targetDir, String project, String appName, String version) {
     echo "Docker Compose部署: $appName:$version -> $targetDir"
     
     def hostsStr = hosts.join(',')
@@ -101,7 +102,7 @@ private void deployDockerCompose(List hosts, String targetDir, String appName, S
 }
 
 // 3️⃣ Kubernetes部署 (直接使用kubectl)
-private void deployK8s(List contexts, String appName, String version, String namespace, String kind) {
+private void deployK8s(List contexts, String project, String appName, String version, String namespace, String kind) {
     echo "K8s部署: $appName:$version -> namespace: ${namespace}"
     
     def imageTag = "registry.com/${appName}:${version}"
