@@ -56,6 +56,8 @@ pipeline {
 
                     // 设置构建描述
                     currentBuild.description = """                           
+                        DeployHosts: ${app.deployHosts}
+                        DeployType: ${app.deployType}                 
                         Version: ${env.releaseVersion}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
