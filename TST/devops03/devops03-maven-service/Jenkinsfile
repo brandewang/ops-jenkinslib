@@ -43,7 +43,7 @@ pipeline {
         stage("Deploy"){
             steps{
                 script{
-                    for app in apps { 
+                    apps.each { app -> 
                         deploy.DeployByAnsible(
                             deployHosts: app.deployHosts,                        
                             project: app.project,
