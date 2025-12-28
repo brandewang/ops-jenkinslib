@@ -1,0 +1,14 @@
+services:
+  devops03-maven-service:
+    restart: always
+    container_name: devops03-maven-service
+    image: prd-ops-harbor03.ciicsh.com/devops/devops03-maven-service:v1.0.0
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+
+networks:
+  mynetwork:
+    driver: bridge

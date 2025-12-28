@@ -11,7 +11,13 @@ def deploy = new Deploy()
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
 // ========== 应用变量 ==========
-def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployHosts': ['172.24.25.65', ], 'targetDir':'/opt/app2', 'deployType': 'docker-compose']
+// def app = ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'stand', 'targetDir':'/opt/app']
+// def app = ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'docker-compose', 'targetDir':'/opt/app2']
+def apps = [
+            ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'k8s', , 'targetDir':'/opt/', 'appNs': 'devops', 'appKind': 'deployment']
+        ]
+
+
 
 pipeline {
     agent { label "build"}
@@ -37,14 +43,18 @@ pipeline {
         stage("Deploy"){
             steps{
                 script{
-                    deploy.DeployByAnsible(
-                        deployHosts: app.deployHosts,
-                        targetDir: app.targetDir,
-                        project: app.project,
-                        appName: app.appName,
-                        releaseVersion: env.releaseVersion,
-                        deployType: app.deployType
-                    )                      
+                    for app in apps { 
+                        deploy.DeployByAnsible(
+                            deployHosts: app.deployHosts,                        
+                            project: app.project,
+                            appName: app.appName,
+                            deployType: app.deployType,
+                            releaseVersion: env.releaseVersion,
+                            targetDir: app.targetDir ?: '',
+                            appNs: app.appNs ?: '',
+                            appKind: app.appKind ?: ''
+                        )  
+                    }                    
                 }
             }
         }

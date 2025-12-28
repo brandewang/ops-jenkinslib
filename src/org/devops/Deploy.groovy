@@ -109,10 +109,10 @@ private void deployK8s(List contexts, String project, String appName, String ver
     
     contexts.each { context ->
         sh """
-            # 切换k8s上下文并更新应用
-            kubectl config use-context ${context} &&
-            kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
-            kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+            ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
+                kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
+                kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+            "
         """
     }
 }
