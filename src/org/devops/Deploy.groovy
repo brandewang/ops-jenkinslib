@@ -108,12 +108,10 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     def hostsStr = hosts.join(',')
     def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
     
-    contexts.each { context ->
-        sh """
-            ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
-                kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
-                kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
-            "
-        """
-    }
+    sh """
+        ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
+            kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
+            kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+        "
+    """
 }
