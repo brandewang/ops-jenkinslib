@@ -87,7 +87,7 @@ private void deployDockerCompose(List hosts, String targetDir, String project, S
     echo "Docker Compose部署: $appName:$version -> $targetDir"
     
     def hostsStr = hosts.join(',')
-    def imageTag = "registry.com/${appName}:${version}"
+    def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
     
     sh """
         ansible ${hostsStr} -i ${hostsStr} -m shell -a "

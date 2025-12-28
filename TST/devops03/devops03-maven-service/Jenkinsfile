@@ -40,6 +40,7 @@ pipeline {
                     deploy.DeployByAnsible(
                         deployHosts: app.deployHosts,
                         targetDir: app.targetDir,
+                        project: app.project,
                         appName: app.appName,
                         releaseVersion: env.releaseVersion,
                         deployType: app.deployType
