@@ -51,8 +51,8 @@ def DeployByAnsible(Map params) {
     
     // 3. 根据类型选择部署方法（traditional改为stand）
     switch(params.deployType) {
-        case 'stand':  // 改为stand表示标准/传统部署
-            deployStand(deployHosts, params.targetDir, params.project, params.appName, params.releaseVersion)
+        case 'standard':  // 改为stand表示标准/传统部署
+            deployStandard(deployHosts, params.targetDir, params.project, params.appName, params.releaseVersion)
             break
         case 'docker-compose':
             deployDockerCompose(deployHosts, params.targetDir, params.project, params.appName, params.releaseVersion)
@@ -65,7 +65,7 @@ def DeployByAnsible(Map params) {
     }
 }
 
-private void deployStand(List hosts, String targetDir, String project, String appName, String version) {
+private void deployStandard(List hosts, String targetDir, String project, String appName, String version) {
     echo "标准部署: $appName:$version -> $targetDir"
     
     // 将主机列表转换为逗号分隔的字符串
