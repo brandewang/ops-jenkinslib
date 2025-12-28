@@ -90,7 +90,7 @@ private void deployDockerCompose(List hosts, String targetDir, String project, S
     def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
     
     sh """
-        ansible ${hostsStr} -i ${hostsStr} -m shell -a "
+        ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
             cd ${targetDir} &&
             # 更新docker-compose中的镜像标签
             sed -i.bak 's|image:.*${appName}:.*|image: ${imageTag}|g' docker-compose.yml &&
