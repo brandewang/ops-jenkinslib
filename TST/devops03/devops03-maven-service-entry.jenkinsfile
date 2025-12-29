@@ -1,186 +1,73 @@
-def ALL_DOWNSTREAM_JOBS = [
+// 脚本式流水线 - Active Choices 的正确用法
+def jobs = [
     'TST/devops03/devops03-maven-service-dockercompose',
     'TST/devops03/devops03-maven-service',
     'TST/devops03/devops03-maven-service-standard'
 ]
 
-pipeline {
-    agent any
-    
-    parameters {
-        // 使用 Active Choices Reactive Parameter 实现多选带默认值
-        activeChoicesReactiveParam(
-            name: 'DOWNSTREAM_JOBS',
-            description: '选择要触发的下游任务（默认全选）',
-            script: groovyScript {
-                """
-                // 返回所有任务作为选项
-                def jobs = ${ALL_DOWNSTREAM_JOBS}
-                
-                // 构建选项列表
-                def options = []
-                jobs.each { job ->
-                    options.add("${job}")
-                }
-                
-                // 设置默认值为全选
-                return options
-                """.stripIndent()
-            },
-            referencedParameter: 'SELECTED_ALL',  // 关联参数，用于全选/全不选
-            choiceType: 'CHECKBOX',
-            filterable: true
-        )
-        
-        // 全选/全不选控制参数
-        activeChoicesReactiveParam(
-            name: 'SELECT_ALL',
-            description: '快速选择',
-            script: groovyScript {
-                '''
-                return ['全选所有', '清空所有']
-                '''
-            },
-            choiceType: 'SINGLE_SELECT',
-            referencedParameter: 'DOWNSTREAM_JOBS'  // 关联到主参数
-        )
-        
-        // 触发模式选择
-        choice(
-            name: 'TRIGGER_MODE',
-            choices: ['并行触发（推荐）', '串行触发'],
-            description: '选择触发模式'
-        )
-        
-        // 构建说明
-        string(
-            name: 'BUILD_COMMENT',
-            defaultValue: '',
-            description: '构建说明（可选）'
-        )
-    }
-        stages {
-        stage('触发下游任务') {
-            steps {
-                script {
-                    echo "======================================"
-                    echo "上游任务：devops03-maven-service-entry"
-                    echo "构建编号：#${BUILD_NUMBER}"
-                    echo "======================================"
-                    
-                    // 处理选中的任务
-                    def selectedJobs = []
-                    
-                    // Active Choices 返回的是数组
-                    if (params.DOWNSTREAM_JOBS) {
-                        selectedJobs = params.DOWNSTREAM_JOBS
-                    } else {
-                        echo "警告：未选择任何下游任务，将使用默认全选"
-                        selectedJobs = ALL_DOWNSTREAM_JOBS
-                    }
-                    
-                    // 输出选择结果
-                    echo "已选择 ${selectedJobs.size()} 个下游任务："
-                    selectedJobs.eachWithIndex { job, index ->
-                        echo "  ${index + 1}. ${job}"
-                    }
-                    
-                    echo "触发模式：${params.TRIGGER_MODE}"
-                    echo "======================================"
-                    
-                    // 根据模式触发下游任务
-                    if (params.TRIGGER_MODE == '串行触发') {
-                        // 串行触发
-                        triggerJobsSequentially(selectedJobs)
-                    } else {
-                        // 并行触发
-                        triggerJobsInParallel(selectedJobs)
-                    }
-                }
+// 定义参数
+properties([
+    [
+        $class: 'ParametersDefinitionProperty',
+        parameterDefinitions: [
+            [
+                $class: 'CascadeChoiceParameterDefinition',
+                choiceType: 'PT_CHECKBOX',
+                description: '选择下游任务',
+                name: 'SELECTED_JOBS',
+                randomName: 'downstream-jobs',
+                referencedParameters: '',
+                script: [
+                    $class: 'GroovyScript',
+                    script: [
+                        sandbox: true,
+                        script: """
+                        // 返回所有任务选项
+                        return ${jobs.collect { "'${it}'" }}
+                        """
+                    ]
+                ]
+            ],
+            [
+                $class: 'BooleanParameterDefinition',
+                defaultValue: true,
+                description: '全选',
+                name: 'ALL_SELECTED'
+            ]
+        ]
+    ]
+])
+
+node {
+    stage('触发下游任务') {
+        script {
+            // 获取选中的任务
+            def selected = []
+            
+            if (params.ALL_SELECTED) {
+                selected = jobs
+                echo "已全选所有 ${jobs.size()} 个任务"
+            } else if (params.SELECTED_JOBS) {
+                selected = params.SELECTED_JOBS
+                echo "已选择 ${selected.size()} 个任务"
             }
-        }
-    }
-    
-    post {
-        always {
-            echo "======================================"
-            echo "上游触发任务执行完成"
-            echo "任务：${JOB_NAME}"
-            echo "编号：#${BUILD_NUMBER}"
-            echo "状态：${currentBuild.currentResult}"
-            echo "时间：${new Date().format('yyyy-MM-dd HH:mm:ss')}"
-            echo "======================================"
-        }
-    }
-}
-
-// ============== 辅助函数 ==============
-
-// 串行触发任务
-def triggerJobsSequentially(List jobs) {
-    def results = [:]
-    
-    jobs.each { jobName ->
-        stage("触发：${jobName}") {
-            try {
-                echo "正在触发：${jobName}"
-                
-                // 触发下游任务
-                build job: jobName,
-                      wait: false,
-                      parameters: [
-                          string(name: 'UPSTREAM', value: "${JOB_NAME}"),
-                          string(name: 'UPSTREAM_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                          string(name: 'COMMENT', value: params.BUILD_COMMENT ?: '')
-                      ]
-                
-                results[jobName] = 'SUCCESS'
-                echo "✅ ${jobName} 触发成功"
-                
-            } catch (Exception e) {
-                results[jobName] = "FAILED: ${e.message}"
-                echo "❌ ${jobName} 触发失败: ${e.message}"
+            
+            // 显示任务列表
+            echo "任务列表："
+            selected.eachWithIndex { job, i ->
+                echo "  ${i+1}. ${job}"
             }
-        }
-    }
-    
-    // 输出串行触发结果
-    echo "串行触发完成，结果："
-    results.each { job, status ->
-        echo "  ${job}: ${status}"
-    }
-    
-    return results
-}
-
-// 并行触发任务
-def triggerJobsInParallel(List jobs) {
-    def parallelStages = [:]
-    
-    // 为每个任务创建并行阶段
-    jobs.each { jobName ->
-        parallelStages[jobName] = {
-            stage("并行触发：${jobName}") {
+            
+            // 触发所有选中的任务
+            selected.each { jobName ->
+                echo "触发：${jobName}"
                 try {
-                    echo "并行触发：${jobName}"
-                    
-                    build job: jobName,
-                          wait: false,
-                          parameters: [
-                              string(name: 'UPSTREAM', value: "${JOB_NAME}"),
-                              string(name: 'UPSTREAM_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                              string(name: 'COMMENT', value: params.BUILD_COMMENT ?: '')
-                          ]
-                    
-                    echo "✅ ${jobName} 已触发"
-                } catch (Exception e) {
+                    build job: jobName, wait: false
+                    echo "✅ ${jobName} 触发成功"
+                } catch (e) {
                     echo "❌ ${jobName} 触发失败: ${e.message}"
-                    // 在并行模式下，失败不影响其他任务
                 }
             }
         }
     }
-    
-    // 执行并行触发
-    parallel parallelStages
 }
