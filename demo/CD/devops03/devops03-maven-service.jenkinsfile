@@ -13,13 +13,6 @@ def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 // ========== 应用变量 ==========
 def app = ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'k8s', , 'targetDir':'/opt/', 'appNs': 'devops', 'appKind': 'deployment']
 
-// def apps = [
-//             ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'stand', 'targetDir':'/opt/app'],
-//             ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'docker-compose', 'targetDir':'/opt/app2'],
-//             ['deployHosts': ['172.24.25.65'], 'project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'deployType': 'k8s', , 'targetDir':'/opt/', 'appNs': 'devops', 'appKind': 'deployment']
-//         ]
-
-
 
 pipeline {
     agent { label "build"}
