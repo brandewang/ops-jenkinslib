@@ -9,7 +9,13 @@ def all_jobs = jobs.join(',')
 
 pipeline {
     agent any
-    
+
+     options {
+        skipDefaultCheckout true
+        timestamps()
+    }
+
+
     parameters {
         // Extended Choice Parameter - 多选参数
         extendedChoice(
@@ -21,6 +27,8 @@ pipeline {
             multiSelectDelimiter: ',',
             visibleItemCount: 5
         )
+        
+        string 'releaseVersion'
     }
     
     stages {
