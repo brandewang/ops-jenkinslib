@@ -6,10 +6,15 @@ def artifacts = new Artifacts()
 def notified = new Notified()
 
 // ========== 下游任务 ==========
+// def jobs = [
+//     'TST/devops03/devops03-maven-service-dockercompose',
+//     'TST/devops03/devops03-maven-service',
+//     'TST/devops03/devops03-maven-service-standard'
+// ]
 def jobs = [
-    'TST/devops03/devops03-maven-service-dockercompose',
-    'TST/devops03/devops03-maven-service',
-    'TST/devops03/devops03-maven-service-standard'
+    'devops03-maven-service-dockercompose',
+    'devops03-maven-service',
+    'devops03-maven-service-standard'
 ]
 
 def all_jobs = jobs.join(',')
@@ -76,9 +81,9 @@ pipeline {
                     env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
 
                     // 设置构建描述
-                    currentBuild.description = """                           
-                        Jobs: ${env.DOWNSTREAM_JOBS}                 
-                        Version: ${env.releaseVersion}
+                    currentBuild.description = """
+                        Version: ${env.releaseVersion}.trim()                           
+                        Jobs: ${env.DOWNSTREAM_JOBS}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
                 
