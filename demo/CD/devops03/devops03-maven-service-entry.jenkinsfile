@@ -1,4 +1,11 @@
-// 最简实现 - 使用 Extended Choice Parameter
+@Library("mylib@main") _
+import org.devops.*
+
+// ========== 工具类初始化 ==========
+def artifacts = new Artifacts()
+def notified = new Notified()
+
+// ========== 下游任务 ==========
 def jobs = [
     'TST/devops03/devops03-maven-service-dockercompose',
     'TST/devops03/devops03-maven-service',
@@ -59,5 +66,28 @@ pipeline {
                 }
             }
         }
+    }
+
+    post {
+        always{
+            wrap([$class: 'BuildUser']) {
+                script {
+                    def causes = currentBuild.getBuildCauses()
+                    env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
+
+                    // 设置构建描述
+                    currentBuild.description = """                           
+                        Jobs: ${env.DOWNSTREAM_JOBS}                 
+                        Version: ${env.releaseVersion}
+                    """.stripIndent().trim()
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
+                
+                    // 发送构建通知
+                    env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+                    notified.SendEmail("${env.USER_EMAIL}")
+
+                }
+            }
+        }        
     }
 }
