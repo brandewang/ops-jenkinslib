@@ -1,9 +1,11 @@
 // 最简实现 - 使用 Extended Choice Parameter
-def ALL_JOBS = [
+def jobs = [
     'TST/devops03/devops03-maven-service-dockercompose',
     'TST/devops03/devops03-maven-service',
     'TST/devops03/devops03-maven-service-standard'
 ]
+
+def all_jobs = jobs.join(',')
 
 pipeline {
     agent any
@@ -13,8 +15,8 @@ pipeline {
         extendedChoice(
             name: 'DOWNSTREAM_JOBS',
             type: 'PT_CHECKBOX',
-            value: ALL_JOBS.join(','),
-            defaultValue: ALL_JOBS.join(','),  // 这里设置默认全选
+            value: all_jobs,
+            defaultValue: all_jobs,  // 这里设置默认全选
             description: '选择要触发的下游任务',
             multiSelectDelimiter: ',',
             visibleItemCount: 5
