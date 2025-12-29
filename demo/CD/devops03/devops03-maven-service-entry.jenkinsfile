@@ -82,7 +82,7 @@ pipeline {
 
                     // 设置构建描述
                     currentBuild.description = """
-                        Version: ${env.releaseVersion}.trim()                           
+                        Version: ${env.releaseVersion}                           
                         Jobs: ${env.DOWNSTREAM_JOBS}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
