@@ -27,7 +27,7 @@ pipeline {
             multiSelectDelimiter: ',',
             visibleItemCount: 5
         )
-        
+
         string 'releaseVersion'
     }
     
@@ -49,7 +49,9 @@ pipeline {
                     parallel selectedJobs.collectEntries { jobName ->
                         ["触发 ${jobName}": {
                             echo "触发: ${jobName}"
-                            build job: jobName, wait: false
+                            build job: jobName, wait: false, parameters: [
+                                string(name: 'releaseVersion', value: params.releaseVersion)
+                            ]
                         }]
                     }
                     
