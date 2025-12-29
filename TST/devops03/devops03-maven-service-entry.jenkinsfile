@@ -1,71 +1,49 @@
-// 脚本式流水线 - Active Choices 的正确用法
-def jobs = [
+// 最简实现 - 使用 Extended Choice Parameter
+def ALL_JOBS = [
     'TST/devops03/devops03-maven-service-dockercompose',
     'TST/devops03/devops03-maven-service',
     'TST/devops03/devops03-maven-service-standard'
 ]
 
-// 定义参数
-properties([
-    [
-        $class: 'ParametersDefinitionProperty',
-        parameterDefinitions: [
-            [
-                $class: 'CascadeChoiceParameterDefinition',
-                choiceType: 'PT_CHECKBOX',
-                description: '选择下游任务',
-                name: 'SELECTED_JOBS',
-                randomName: 'downstream-jobs',
-                referencedParameters: '',
-                script: [
-                    $class: 'GroovyScript',
-                    script: [
-                        sandbox: true,
-                        script: """
-                        // 返回所有任务选项
-                        return ${jobs.collect { "'${it}'" }}
-                        """
-                    ]
-                ]
-            ],
-            [
-                $class: 'BooleanParameterDefinition',
-                defaultValue: true,
-                description: '全选',
-                name: 'ALL_SELECTED'
-            ]
-        ]
-    ]
-])
-
-node {
-    stage('触发下游任务') {
-        script {
-            // 获取选中的任务
-            def selected = []
-            
-            if (params.ALL_SELECTED) {
-                selected = jobs
-                echo "已全选所有 ${jobs.size()} 个任务"
-            } else if (params.SELECTED_JOBS) {
-                selected = params.SELECTED_JOBS
-                echo "已选择 ${selected.size()} 个任务"
-            }
-            
-            // 显示任务列表
-            echo "任务列表："
-            selected.eachWithIndex { job, i ->
-                echo "  ${i+1}. ${job}"
-            }
-            
-            // 触发所有选中的任务
-            selected.each { jobName ->
-                echo "触发：${jobName}"
-                try {
-                    build job: jobName, wait: false
-                    echo "✅ ${jobName} 触发成功"
-                } catch (e) {
-                    echo "❌ ${jobName} 触发失败: ${e.message}"
+pipeline {
+    agent any
+    
+    parameters {
+        // Extended Choice Parameter - 多选参数
+        extendedChoice(
+            name: 'DOWNSTREAM_JOBS',
+            type: 'PT_CHECKBOX',
+            value: ALL_JOBS.join(','),
+            defaultValue: ALL_JOBS.join(','),  // 这里设置默认全选
+            description: '选择要触发的下游任务',
+            multiSelectDelimiter: ',',
+            visibleItemCount: 5
+        )
+    }
+    
+    stages {
+        stage('触发下游') {
+            steps {
+                script {
+                    echo "🚀 开始触发下游任务"
+                    
+                    // 处理选中的任务
+                    def selectedJobs = params.DOWNSTREAM_JOBS.split(',').collect { it.trim() }
+                    
+                    echo "已选择 ${selectedJobs.size()} 个任务："
+                    selectedJobs.each { job ->
+                        echo "  • ${job}"
+                    }
+                    
+                    // 并行触发
+                    parallel selectedJobs.collectEntries { jobName ->
+                        ["触发 ${jobName}": {
+                            echo "触发: ${jobName}"
+                            build job: jobName, wait: false
+                        }]
+                    }
+                    
+                    echo "✅ 所有任务已触发"
                 }
             }
         }
