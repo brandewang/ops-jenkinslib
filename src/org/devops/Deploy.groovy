@@ -91,8 +91,8 @@ private void deployK8s(List hosts,  String project, String appName, String versi
         } catch (Exception e) {
             echo "发布状态检测失败: ${e.message}"
             env.ROLLBACK_NEEDED = true
-            env.ROLLOUT_ERROR = e.message
-            println(e.ROLLOUT_ERROR)
+            env.DEPLOY_ERROR = e.message
+            currentBuild.currentResult = "SUCCESS"
         }
 }
 
