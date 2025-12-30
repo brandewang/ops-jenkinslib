@@ -1,6 +1,7 @@
 package org.devops
 
 def SendEmail(userEmail){
+    def errorHtml = env.ERROR_MESSAGE ? "<p><strong>错误信息:</strong> ${env.ERROR_MESSAGE}</p>" : ""
     emailext(
                 subject: "构建通知: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 to: userEmail,
@@ -13,7 +14,7 @@ def SendEmail(userEmail){
                     <p><strong>时间:</strong> ${new Date().format('yyyy-MM-dd HH:mm:ss')}</p>
                     <p><strong>详情:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
                     <p><strong>触发原因:</strong> ${env.triggerDescription}</p>
-                    ${env.ERROR_MESSAGE ? <p><strong>错误信息:</strong> ERROR_MESSAGE</p>: ""}
+                    ${errorHtml}
                     <hr>
                     <p style="color: gray; font-size: 12px;">Jenkins 自动通知</p>
                 </body>
