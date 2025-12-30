@@ -1,39 +1,5 @@
 package org.devops
 
-// //ansible 发布
-// def DeployByAnsible(deployHosts, targetDir, appName, releaseVersion, port){
-//     //将主机写入清单文件
-//     sh "rm -fr hosts"
-//     for (host in "${deployHosts}".split(',')){
-//         sh "echo ${host} >> hosts"
-//     }
-//     // sh "cat hosts"
-
-//     // ansible 发布
-//     sh """
-//         # 主机连通性检测
-//         ansible "${deployHosts}" -m ping -i hosts
-
-//         # 清理和创建发布目录
-//         ansible "${deployHosts}" -m shell -a "rm -fr ${targetDir}/${appName}/*" && mkdir -p ${targetDir}/${appName} || echo file is exists"
-
-//         # 复制app
-//         ansible "${deployHosts}" -m copy -a "src=${appName}-${releaseVersion}.jar dest=${targetDir}/${appName}/${appName}-${releaseVersion}.jar"
-
-//         # 复制脚本
-//         ansible "${deployHosts}" -m copy -a "src=service.sh dest=${targetDir}/${appName}/service.sh"
-
-//         # 启动服务
-//         ansible "${deployHosts}" -m shell -a "cd ${targetDir}/${appName}/ ; source /etc/profile && sh service.sh ${appName} ${releaseVersion} ${port} start"
-
-//         # 检查服务
-//         sleep 10
-//         ansible "${deployHosts}" -m shell -a "cd ${targetDir}/${appName}/ ; source /etc/profile && sh service.sh ${appName} ${releaseVersion} ${port} check"
-//     """
-
-// }
-
-
 def DeployByAnsible(Map params) {
     // 检查必需参数
     if (!params.deployType) error("缺少必需参数: deployType")
@@ -43,7 +9,7 @@ def DeployByAnsible(Map params) {
     if (!params.releaseVersion) error("缺少必需参数: releaseVersion")
     // if (!params.targetDir) error("缺少必需参数: targetDir")
 
-    
+
     // 2. 参数处理
     def deployHosts = params.deployHosts instanceof List ? params.deployHosts : params.deployHosts.split(',')
     def appNs = params.appNs ?: 'default'
@@ -82,7 +48,7 @@ private void deployStandard(List hosts, String targetDir, String project, String
     """
 }
 
-// 2️⃣ Docker Compose部署 (使用ansible -m shell)
+// Docker Compose部署 (使用ansible -m shell)
 private void deployDockerCompose(List hosts, String targetDir, String project, String appName, String version) {
     echo "Docker Compose部署: $appName:$version -> $targetDir"
     
@@ -101,7 +67,7 @@ private void deployDockerCompose(List hosts, String targetDir, String project, S
     """
 }
 
-// 3️⃣ Kubernetes部署 (直接使用kubectl)
+// Kubernetes部署 (直接使用kubectl)
 private void deployK8s(List hosts,  String project, String appName, String version, String namespace, String kind) {
     echo "K8s部署: $appName:$version -> namespace: ${namespace}"
     
@@ -111,7 +77,63 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     sh """
         ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
             kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
-            kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+        "
+    """
+
+    try {
+            sh """
+                ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
+                    kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+                "
+            """
+            echo "发布状态检测成功"
+         
+        } catch (Exception e) {
+            echo "发布状态检测失败: ${e.message}"
+            env.ROLLOUT_FAILED = 'true'
+            env.ROLLOUT_ERROR = e.message
+        }
+}
+
+// 回滚函数
+def RollbackByAnsible(Map params) {
+    // 检查必需参数
+    if (!params.deployType) error("缺少必需参数: deployType")
+    if (!params.deployHosts) error("缺少必需参数: deployHosts")
+    if (!params.project) error("缺少必需参数: project")
+    if (!params.appName) error("缺少必需参数: appName")
+    
+    // 参数处理
+    def deployHosts = params.deployHosts instanceof List ? params.deployHosts : params.deployHosts.split(',')
+    def appNs = params.appNs ?: 'default'
+    def appKind = params.appKind ?: 'deployment'
+    def rollbackVersion = params.rollbackVersion ?: 'previous'
+    
+    // 根据部署类型选择回滚方法
+    switch(params.deployType) {
+        case 'standard':
+            rollbackStandard(deployHosts, params.targetDir, params.project, params.appName, rollbackVersion)
+            break
+        case 'docker-compose':
+            rollbackDockerCompose(deployHosts, params.targetDir, params.project, params.appName, rollbackVersion)
+            break
+        case 'k8s':
+            rollbackK8s(deployHosts, params.project, params.appName, rollbackVersion, appNs, appKind)
+            break
+        default:
+            error("不支持的deployType: ${params.deployType}")
+    }
+}
+
+// Kubernetes回滚 (直接使用kubectl)
+private void rollbackK8s(List hosts,  String project, String appName, String version, String namespace, String kind) {
+    echo "Kubernetes 回滚: $appName -> 版本: 上一版本"
+    
+    def hostsStr = hosts.join(',')
+
+    sh """
+        ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
+            kubectl rollout undo ${kind}/${appName} -n ${namespace}
         "
     """
 }

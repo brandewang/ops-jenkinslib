@@ -52,7 +52,29 @@ pipeline {
                 }
             }
         }
-
+        stage("Rollback"){
+            when {
+                allOf {
+                    expression {
+                        env.ROLLBACK_NEEDED
+                    }
+                }
+            }
+            steps{
+                script{
+                    deploy.RollbackByAnsible(
+                        deployHosts: app.deployHosts,                        
+                        project: app.project,
+                        appName: app.appName,
+                        deployType: app.deployType,
+                        releaseVersion: env.releaseVersion,
+                        targetDir: app.targetDir ?: '',
+                        appNs: app.appNs ?: '',
+                        appKind: app.appKind ?: ''
+                    )  
+                }
+            }
+        }
     }
 
     post {
