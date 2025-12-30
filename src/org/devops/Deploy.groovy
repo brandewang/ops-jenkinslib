@@ -91,7 +91,7 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     } catch (Exception e) {
         echo "发布状态检测失败: ${e.message}"
         env.ROLLBACK_NEEDED = true
-        env.DEPLOY_ERROR = e.message
+        env.ERROR_MESSAGE = e.message
         currentBuild.result = 'UNSTABLE'
     }
 }
