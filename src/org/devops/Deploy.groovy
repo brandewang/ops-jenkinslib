@@ -76,7 +76,7 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     
     sh """
         ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
-            kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} &&
+            kubectl set image ${kind}/${appName} ${appName}=${imageTag} -n ${namespace} 
         "
     """
 
@@ -90,8 +90,9 @@ private void deployK8s(List hosts,  String project, String appName, String versi
          
         } catch (Exception e) {
             echo "发布状态检测失败: ${e.message}"
-            env.ROLLOUT_FAILED = 'true'
+            env.ROLLBACK_NEEDED = true
             env.ROLLOUT_ERROR = e.message
+            println(e.ROLLOUT_ERROR)
         }
 }
 
