@@ -81,19 +81,19 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     """
 
     try {
-            sh """
-                ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
-                    kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
-                "
-            """
-            echo "发布状态检测成功"
-         
-        } catch (Exception e) {
-            echo "发布状态检测失败: ${e.message}"
-            env.ROLLBACK_NEEDED = true
-            env.DEPLOY_ERROR = e.message
-            currentBuild.currentResult = "SUCCESS"
-        }
+        sh """
+            ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
+                kubectl rollout status ${kind}/${appName} -n ${namespace} --timeout=300s
+            "
+        """
+        echo "发布状态检测成功"
+        
+    } catch (Exception e) {
+        echo "发布状态检测失败: ${e.message}"
+        env.ROLLBACK_NEEDED = true
+        env.DEPLOY_ERROR = e.message
+        currentBuild.result = 'UNSTABLE'
+    }
 }
 
 // 回滚函数
