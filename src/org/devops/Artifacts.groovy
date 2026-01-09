@@ -77,7 +77,7 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 
     // 执行部署
     sh """
-        mvn deploy:deploy-file \\
+        mvn deploy:deploy-file -s settings.xml \\
             -DgeneratePom=false \\
             -DrepositoryId=${repoId} \\
             -Dfile=${projectInfo.filePath} \\
