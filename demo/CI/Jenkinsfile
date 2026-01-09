@@ -61,7 +61,6 @@ pipeline {
     options {
         skipDefaultCheckout true
         timestamps()
-        cleanWs()
     }
 
     parameters {
