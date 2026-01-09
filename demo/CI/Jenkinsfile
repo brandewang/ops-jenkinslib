@@ -10,9 +10,9 @@ def artifacts = new Artifacts()
 
 
 // ========== 配置变量 ==========
-def DEFAULT_SRC_URL = 'http://gitlab.ciicsh.com/ops_group/devops03-maven-service.git'
+def DEFAULT_SRC_URL = 'http://192.168.5.85:8802/ops/devops03-maven-service.git'
 def DEFAULT_SRC_BRANCH = 'master'
-def DEFAULT_CONFIG_URL = 'http://gitlab.ciicsh.com/ops_group/devops3-jenkinslib-service.git'
+def DEFAULT_CONFIG_URL = 'http://192.168.5.85:8802/ops/ops-jenkinslib.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
 
