@@ -55,10 +55,10 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
     if (!targetRepoUrl) {
         if (projectInfo.version.toUpperCase().contains('SNAPSHOT')) {
             // SNAPSHOT 版本 → snapshots 仓库
-            targetRepoUrl = 'http://dxnexus.ciicsh.com/repository/maven-snapshots/'
+            targetRepoUrl = 'http://192.168.5.85:8803/repository/maven-snapshots/'
         } else {
             // Release 版本 → releases 仓库
-            targetRepoUrl = 'http://dxnexus.ciicsh.com/repository/maven-releases/'
+            targetRepoUrl = 'http://192.168.5.85:8803/repository/maven-releases/'
         }
     }
     
