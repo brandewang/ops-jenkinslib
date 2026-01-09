@@ -159,10 +159,10 @@ under the License.
     </mirror>
      -->
     <mirror>
-      <id>dxnexus-maven</id>
+      <id>nexus-maven</id>
       <mirrorOf>central</mirrorOf>
-      <name>dxnexus-maven</name>
-      <url>http://dxnexus.ciicsh.com/repository/maven-public/</url>
+      <name>nexus-maven</name>
+      <url>http://192.168.5.85:8803/repository/maven-public/</url>
     </mirror>
   </mirrors>
 
