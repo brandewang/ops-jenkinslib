@@ -90,7 +90,7 @@ def DeployMavenArtifact(module='', repoUrl='', repoId='mymaven', pomPath='pom.xm
 }
 
 //上传制品
-def PushRawArtifacts(project, appName, appType, module='', repoName='mylocalrepo'){
+def PushRawArtifacts(project, appName, appType, module='', repoName='raw-local'){
     def targetDir="/${project}/${appName}/${env.ARTIFACT_VERSION}"
     def version="${env.ARTIFACT_VERSION}"
     switch(appType){
@@ -114,17 +114,19 @@ def PushRawArtifacts(project, appName, appType, module='', repoName='mylocalrepo
         default:
             error: "No such tools ... [maven/]"
             break;
-    }  
-    sh """
-        ls -l 
-        curl -X POST "http://dxnexus.ciicsh.com/service/rest/v1/components?repository=${repoName}" \\
-        -H 'accept: application/json' \\
-        -H 'Content-Type: multipart/form-data' \\
-        -F "raw.directory=${targetDir}" \\
-        -F "raw.asset1=@${filePath}/${pkgName}" \\
-        -F "raw.asset1.filename=${pkgName}" \\
-        -u "admin":"S_OjBYy14J"
-    """
+    }
+    withCredentials([usernamePassword(credentialsId: 'cfa0ba7f-8289-4bc4-b7f9-5f73a8a7ca0a', passwordVariable: 'pass', usernameVariable: 'user')]) {
+        sh """
+            ls -l 
+            curl -X POST "http://192.168.5.85:8803/service/rest/v1/components?repository=${repoName}" \\
+            -H 'accept: application/json' \\
+            -H 'Content-Type: multipart/form-data' \\
+            -F "raw.directory=${targetDir}" \\
+            -F "raw.asset1=@${filePath}/${pkgName}" \\
+            -F "raw.asset1.filename=${pkgName}" \\
+            -u "${user}":"${pass}"
+        """
+    }
 }
 
 //下载制品
