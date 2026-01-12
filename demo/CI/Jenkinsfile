@@ -98,6 +98,7 @@ pipeline {
                         def checkoutResult = checkout.GetCode("${env.SRC_URL}", "${env.SRC_BRANCH}")
                         env.SRC_COMMIT_ID = checkoutResult.shortCommitId
                         env.SRC_COMMIT_TITLE = checkoutResult.title
+                        env.SRC_COMMITTER = checkoutResult.committer
                         env.ARTIFACT_VERSION = checkoutResult.tag
                     }
                 }
@@ -188,7 +189,7 @@ pipeline {
                     currentBuild.description = """                           
                         Title: ${env.SRC_COMMIT_TITLE}
                         Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
-                        User: ${env.webhook_commitUser ?: env.committer }
+                        User: ${env.webhook_commitUser ?: env.SRC_COMMITTER }
                         Version: ${env.ARTIFACT_VERSION}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
