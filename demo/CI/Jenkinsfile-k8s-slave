@@ -199,8 +199,9 @@ pipeline {
                     // 设置构建描述
                     currentBuild.description = """                           
                         Title: ${env.SRC_COMMIT_TITLE}
-                        Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
-                        User: ${env.webhook_commitUser ?: env.SRC_COMMITTER }
+                        Branch: ${env.SRC_BRANCH}
+                        CommitID: ${env.SRC_COMMIT_ID}
+                        Committer: ${env.webhook_commitUser ?: env.SRC_COMMITTER }
                         Version: ${env.ARTIFACT_VERSION}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
@@ -208,7 +209,6 @@ pipeline {
                     // 发送构建通知
                     env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
                     notified.SendEmail("${env.USER_EMAIL}")
-
                 }
             }
         }        
