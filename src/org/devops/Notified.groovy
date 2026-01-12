@@ -9,7 +9,7 @@ def SendEmail(userEmail){
 
     emailext(
                 subject: "构建通知: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                to: userEmail,
+                to: allEmails,
                 body: """
                 <html>
                 <body>
