@@ -199,7 +199,7 @@ pipeline {
                     currentBuild.description = """                           
                         Title: ${env.SRC_COMMIT_TITLE}
                         Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
-                        User: ${env.webhook_commitUser ?: env.BUILD_USER }
+                        User: ${env.webhook_commitUser ?: env.committer }
                         Version: ${env.ARTIFACT_VERSION}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"

@@ -26,6 +26,12 @@ def GetCode(srcUrl, branchName){
         title = lines[0].trim()
     }
 
+    // 获取提交人
+    def committer = sh(
+        script: 'git log -1 --pretty="format:%an <%ae>"',
+        returnStdout: true
+    ).trim()
+
     // 提取tag
     def tag = ""
     def isTag = branchName.startsWith('refs/tags/')
@@ -41,6 +47,7 @@ def GetCode(srcUrl, branchName){
         shortCommitId: commitId.substring(0, 8),
         title: title,
         message: commitMessage,
+        committer: committer,
         tag: tag
     ]
 }
