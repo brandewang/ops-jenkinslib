@@ -54,7 +54,7 @@ pipeline {
             ],
             regexpFilterExpression: '^(?!0{40}).{40}$',
             regexpFilterText: '$after',
-            token: 'devops03-maven-service-lib',
+            token: 'devops03-maven-service',
             tokenCredentialId: ''
         )
     }
