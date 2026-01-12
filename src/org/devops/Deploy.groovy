@@ -53,7 +53,7 @@ private void deployDockerCompose(List hosts, String targetDir, String project, S
     echo "Docker Compose部署: $appName:$version -> $targetDir"
     
     def hostsStr = hosts.join(',')
-    def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
+    def imageTag = "192.168.5.85:8801/${project}/${appName}:${version}"
     
     sh """
         ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "
@@ -72,7 +72,7 @@ private void deployK8s(List hosts,  String project, String appName, String versi
     echo "K8s部署: $appName:$version -> namespace: ${namespace}"
     
     def hostsStr = hosts.join(',')
-    def imageTag = "prd-ops-harbor03.ciicsh.com/${project}/${appName}:${version}"
+    def imageTag = "192.168.5.85:8801/${project}/${appName}:${version}"
     
     sh """
         ansible "${hostsStr}" -i "${hostsStr}," -m shell -a "

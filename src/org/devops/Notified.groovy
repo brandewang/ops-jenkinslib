@@ -5,7 +5,7 @@ def SendEmail(userEmail){
     def opsEmail = 'brande.wang@hotmail.com'
     def userList = userEmail.split('\\s+')
     def opsList = opsEmail.split('\\s+')
-    def allEmails = (userList + opsList).unique().join(' ')
+    def allEmails = (userList + opsList).toList().unique().join(' ')
 
     emailext(
                 subject: "构建通知: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
