@@ -14,7 +14,7 @@ def DEFAULT_SRC_URL = 'http://192.168.5.85:8802/ops/devops03-maven-service.git'
 def DEFAULT_SRC_BRANCH = 'main'
 def DEFAULT_CONFIG_URL = 'http://192.168.5.85:8802/ops/ops-jenkinslib.git'
 def DEFAULT_CONFIG_BRANCH = 'main'
-def DEFAULT_USER_EMAIL = '384305552@qq.com'
+def DEFAULT_USER_EMAIL = ''
 
 // ========== 应用变量 ==========
 def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'module': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true]
@@ -196,25 +196,13 @@ pipeline {
                     env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
 
                     // 设置构建描述
-                    if (env.webhook_commitUser) {
-                        // Webhook 触发
-                        currentBuild.description = """                           
-                            Title: ${env.SRC_COMMIT_TITLE}
-                            Branch: ${env.webhook_branchName} | Commit: ${env.SRC_COMMIT_ID}
-                            Committer: ${env.webhook_commitUser}
-                            Version: ${env.ARTIFACT_VERSION}
-                        """.stripIndent().trim()
-                        currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by GitLab Webhook"
-                    } else {
-                        // 手动触发
-                        currentBuild.description = """                           
-                            Title: ${env.SRC_COMMIT_TITLE}
-                            Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
-                            User: ${env.BUILD_USER}
-                            Version: ${env.ARTIFACT_VERSION}
-                        """.stripIndent().trim()
-                        currentBuild.displayName = "#${env.BUILD_NUMBER} - Trigger by Jenkins"
-                    }
+                    currentBuild.description = """                           
+                        Title: ${env.SRC_COMMIT_TITLE}
+                        Branch: ${env.SRC_BRANCH} | Commit: ${env.SRC_COMMIT_ID}
+                        User: ${env.webhook_commitUser ?: env.BUILD_USER }
+                        Version: ${env.ARTIFACT_VERSION}
+                    """.stripIndent().trim()
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
                     
                     // 发送构建通知
                     env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"

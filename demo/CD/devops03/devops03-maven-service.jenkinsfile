@@ -8,7 +8,7 @@ def deploy = new Deploy()
 
 
 // ========== 配置变量 ==========
-def DEFAULT_USER_EMAIL = '384305552@qq.com'
+def DEFAULT_USER_EMAIL = ''
 
 // ========== 应用变量 ==========
 def app = [
