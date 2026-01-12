@@ -8,11 +8,11 @@ def deploy = new Deploy()
 
 
 // ========== 配置变量 ==========
-def DEFAULT_USER_EMAIL = 'wangysh@ciicsh.com'
+def DEFAULT_USER_EMAIL = '384305552@qq.com'
 
 // ========== 应用变量 ==========
 def app = [
-    'deployHosts': ['172.24.25.65'], 
+    'deployHosts': ['192.168.5.81'], 
     'project':'devops', 
     'appName':'devops03-maven-service', 
     'appType': 'maven', 

@@ -2,6 +2,11 @@ package org.devops
 
 def SendEmail(userEmail){
     def errorHtml = env.ERROR_MESSAGE ? "<p><strong>错误信息:</strong> ${env.ERROR_MESSAGE}</p>" : ""
+    def opsEmail = 'brande.wang@hotmail.com'
+    def userList = userEmail.split('\\s+')
+    def opsList = opsEmail.split('\\s+')
+    def allEmails = (userList + opsList).unique().join(' ')
+
     emailext(
                 subject: "构建通知: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 to: userEmail,
