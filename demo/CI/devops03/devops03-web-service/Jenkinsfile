@@ -43,8 +43,13 @@ try {
 
 
 pipeline {
-    agent { label "build" }
 
+    agent {
+        kubernetes {
+            inheritFrom 'inbound-agent'
+        }
+    }
+    
     triggers {
         GenericTrigger(
             causeString: 'Generic Cause',
