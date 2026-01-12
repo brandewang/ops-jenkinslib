@@ -121,7 +121,7 @@ pipeline {
 
         stage("CodeBuild"){
             steps {
-                container("${appType}") {
+                container("${app.appType}") {
                     dir('code'){
                         script {
                             buildTool.CodeBuild("${app.appType}","${app.module}")
@@ -133,7 +133,7 @@ pipeline {
 
         stage("UnitTest"){
             steps {
-                container("${appType}") {
+                container("${app.appType}") {
                     dir('code'){
                         script {
                             unittest.CodeTest("${app.appType}")
