@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: devops03
-  name: demo01
+  namespace: devops
+  name: devops03-maven-service
 spec:
   replicas: 1
   strategy:
@@ -12,17 +12,17 @@ spec:
       maxUnavailable: 1             # 升级过程中最多有多少个POD处于无法提供服务的状态
   selector:
     matchLabels:
-      app: demo01
+      app: devops03-maven-service
   template:
     metadata:
       labels:
-        app: demo01
+        app: devops03-maven-service
         track: stable
     spec:
       imagePullSecrets:
         - name: regcred
       containers:
-        - name: demo01
+        - name: devops03-maven-service
           image: 192.168.5.85:8801/devops/devops03-maven-service:main-a79c0bfa
           imagePullPolicy: Always
           resources:                     # 容器资源管理
@@ -61,20 +61,20 @@ spec:
             - name: NACOS_PORT
               value: "8091"
             - name: NACOS_NAMESPACE
-              value: "demo01"
+              value: "devops03-maven-service"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: devops03
-  name: demo01-service
+  namespace: devops
+  name: devops03-maven-service
 spec:
   ports:
     - port: 8080
-      name: demo01-service
+      name: devops03-maven-service
       targetPort: 8080
   selector:
-    app: demo01
+    app: devops03-maven-service
 
 ---
