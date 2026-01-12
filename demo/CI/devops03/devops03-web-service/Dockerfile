@@ -1,5 +1,4 @@
-FROM harbor.ciicsh.com/library/nginx:latest
-
+FROM 192.168.5.85:8801/library/nginx:1.28.1
 # 删除nginx 默认配置
 RUN rm /etc/nginx/conf.d/default.conf
 

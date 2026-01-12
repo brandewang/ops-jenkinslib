@@ -17,7 +17,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = ''
 
 // ========== 应用变量 ==========
-def app = ['project':'devops', 'appName':'devops03-web-service', 'appType': 'npm', 'nexusPush': true, 'dockerBuild': true]
+def app = ['project':'devops', 'appName':'devops03-web-service', 'appType': 'npm14', 'nexusPush': true, 'dockerBuild': true]
 
 // ========== 下游任务 ==========
 def jobs = []
