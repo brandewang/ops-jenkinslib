@@ -149,7 +149,9 @@ pipeline {
                     script {                                       
                         // 上传到 Maven 仓库
                         if(app.mavenDeploy){
-                            artifacts.DeployMavenArtifact(app.module)
+                            container("${app.appType}") {
+                                artifacts.DeployMavenArtifact(app.module)
+                            }
                         }
                         // 上传到 Nexus raw 仓库
                         // 更完整的语义化版本验证 (SemVer)
