@@ -27,8 +27,8 @@ def GoBuild(){
 
 //Npm
 def NpmBuild(){
-    sh "npm config set registry http://192.168.5.85:8803/repository/npm-proxy/"
     sh "npm cache clean --force"
+    sh "npm config set registry http://192.168.5.85:8803/repository/npm-proxy/"
     sh "npm install && npm run build"
 }
 
