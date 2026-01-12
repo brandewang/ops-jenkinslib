@@ -46,7 +46,7 @@ def CodeBuild(type, module='', configPath=""){
         case "gradle":
             GradleBuild()
             break;
-        case "npm":
+        case "node14":
             NpmBuild()
             break;
         case "yarm":

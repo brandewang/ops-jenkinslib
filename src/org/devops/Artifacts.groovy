@@ -104,7 +104,7 @@ def PushRawArtifacts(project, appName, appType, module='', repoName='raw-local')
                 cp ${opkgName} ${pkgName}
             """
             break;
-        case "npm":
+        case "node14":
             filePath="dist"
             pkgName="${appName}-${version}.tar.gz"
             sh """
