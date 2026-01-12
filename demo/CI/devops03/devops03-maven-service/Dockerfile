@@ -1,4 +1,4 @@
-FROM 192.168.5.85:8801/library/openjdk:17
+FROM 192.168.5.85:8801/library/eclipse-temurin:17-jdk-alpine
 MAINTAINER brandewang<brandewang@hotmail.com>
 WORKDIR /home
 ENV APP_NAME="demo1.jar"
