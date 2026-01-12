@@ -1,4 +1,4 @@
-FROM harbor.ciicsh.com/library/openjdk:17
+FROM 192.168.5.85:8801/library/openjdk:17
 MAINTAINER brandewang<brandewang@hotmail.com>
 WORKDIR /home
 ENV APP_NAME="demo1.jar"
