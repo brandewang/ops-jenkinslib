@@ -8,7 +8,7 @@ def SendEmail(userEmail){
     def allEmails = (userList + opsList).toList().unique().join(' ')
 
     emailext(
-                subject: "构建通知: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                subject: "${currentBuild.currentResult == 'SUCCESS' ? '构建成功' : '构建失败'}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 to: allEmails,
                 body: """
                 <html>
