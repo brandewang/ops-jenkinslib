@@ -13,7 +13,7 @@ def DeployByArgocd(Map params) {
     """
 }
 
-def RollbackbackByArgocd(){
+def RollbackByArgocd(){
     println("rollback")
 }
 
