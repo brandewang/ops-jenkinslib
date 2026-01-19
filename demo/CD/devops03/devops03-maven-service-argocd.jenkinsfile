@@ -16,7 +16,7 @@ def DEFAULT_USER_EMAIL = ''
 def app = [
     'project':'demo01', 
     'appName':'devops03-maven-service', 
-    'valueFile':'values-prod.yaml'
+    'valuesFile':'values-prod.yaml'
     ]
 
 
