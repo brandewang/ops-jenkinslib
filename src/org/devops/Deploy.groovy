@@ -2,6 +2,12 @@ package org.devops
 
 
 def DeployByArgocd(Map params) {
+    // 检查必需参数
+    if (!params.manifestsUrl) error("缺少必需参数: manifestsUrl")
+    if (!params.manifestsBranch) error("缺少必需参数: manifestsBranch")
+    if (!params.manifestsPath) error("缺少必需参数: manifestsPath")
+    if (!params.version) error("缺少必需参数: version")
+
     checkout scmGit(branches: [[name: params.manifestsBranch]], 
                     extensions: [], 
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
@@ -12,6 +18,7 @@ def DeployByArgocd(Map params) {
       cd ${params.manifestsPath}
       ls -l
       echo ${params.version}
+      echo ${params.valuesFile}
     """
 }
 
