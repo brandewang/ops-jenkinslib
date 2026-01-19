@@ -14,7 +14,7 @@ def DeployByArgocd(Map params) {
 }
 
 def RollbackbackByArgocd(){
-    break
+    println("rollback")
 }
 
 def DeployByAnsible(Map params) {
