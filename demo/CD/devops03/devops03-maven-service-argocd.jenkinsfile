@@ -16,7 +16,7 @@ def DEFAULT_USER_EMAIL = ''
 def app = [
     'project':'demo01', 
     'appName':'devops03-maven-service', 
-    'valuesFile':'values-prod.yaml'
+    'valueFile':'values-prod.yaml'
     ]
 
 
@@ -40,7 +40,7 @@ pipeline {
                         manifestsUrl: DEFAULT_MANIFESTS_URL,
                         manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
                         manifestsPath: "${app.project}/${app.appName}",
-                        valuesFile: app.valuesFile,
+                        valueFile: app.valueFile,
                         version: params.releaseVersion
                     )
                 }

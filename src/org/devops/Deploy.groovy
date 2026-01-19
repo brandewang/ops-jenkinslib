@@ -18,7 +18,7 @@ def DeployByArgocd(Map params) {
       cd ${params.manifestsPath}
       ls -l
       echo ${params.version}
-      echo ${params.valuesFile}
+      echo ${params.valueFile}
     """
 }
 
