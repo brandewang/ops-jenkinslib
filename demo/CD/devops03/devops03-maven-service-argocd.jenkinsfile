@@ -40,7 +40,7 @@ pipeline {
                         manifestsUrl: DEFAULT_MANIFESTS_URL,
                         manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
                         manifestsPath: "${app.project}/${app.appName}",
-                        valuesFile: valuesFile,
+                        valuesFile: app.valuesFile,
                         version: params.releaseVersion
                     )
                 }
