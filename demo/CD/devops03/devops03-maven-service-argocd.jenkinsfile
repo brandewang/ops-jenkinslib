@@ -16,7 +16,7 @@ def DEFAULT_USER_EMAIL = ''
 def app = [
     'project':'demo01', 
     'appName':'devops03-maven-service', 
-    'valueFiles':'values-prod.yaml'
+    'valueFile':'values-prod.yaml'
     ]
 
 
@@ -36,7 +36,13 @@ pipeline {
         stage("Deploy"){
             steps{
                 script{
-                    deploy.DeployByArgocd()
+                    deploy.DeployByArgocd(
+                        manifestsUrl: DEFAULT_MANIFESTS_URL,
+                        manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
+                        manifestsPath: "${app.project}/${app.appName}",
+                        valuesFile: valuesFile,
+                        version: params.releaseVersion
+                    )
                 }
             }
         }

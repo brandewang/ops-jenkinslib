@@ -1,18 +1,17 @@
 package org.devops
 
 
-def DeployByArgocd() {
-    checkout scmGit(branches: [[name: DEFAULT_MANIFESTS_BRANCH]], 
+def DeployByArgocd(Map params) {
+    checkout scmGit(branches: [[name: params.manifestsBranch]], 
                     extensions: [], 
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
-                    url: DEFAULT_MANIFESTS_URL]])
+                    url: Dparams.manifestsUrl]])
 
-    def manifestsPath = "${app.project}/${app.appName}"
 
     sh """
-      cd ${manifestsPath}
+      cd ${params.manifestsPath}
       ls -l
-      echo ${params.releaseVersion}
+      echo ${params.version}
     """
 }
 
