@@ -20,7 +20,7 @@ def DEFAULT_USER_EMAIL = ''
 def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'module': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true]
 
 // ========== 下游任务 ==========
-def jobs = ['TST/devops03/devops03-maven-service']
+def jobs = ['项目01/TST/devops03-maven-service']
 
 try {
     //gitlab传递的数据
@@ -59,7 +59,7 @@ pipeline {
             ],
             regexpFilterExpression: '^(?!0{40}).{40}$',
             regexpFilterText: '$after',
-            token: 'devops03-maven-service-lib',
+            token: 'devops03-maven-service',
             tokenCredentialId: ''
         )
     }
@@ -78,7 +78,6 @@ pipeline {
         description: '源代码仓库URL'
     )
         string(name: 'PARAMS_SRC_BRANCH', defaultValue: DEFAULT_SRC_BRANCH, description: '代码分支')
-        string(name: 'PARAMS_USER_EMAIL', defaultValue: DEFAULT_USER_EMAIL, description: '用户邮箱')
     }
 
     environment {
@@ -207,7 +206,7 @@ pipeline {
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"
                     
                     // 发送构建通知
-                    env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: params.PARAMS_USER_EMAIL}"
+                    env.USER_EMAIL = "${env.webhook_userEmail ?: env.BUILD_USER_EMAIL ?: DEFAULT_USER_EMAIL}"
                     notified.SendEmail("${env.USER_EMAIL}")
                 }
             }

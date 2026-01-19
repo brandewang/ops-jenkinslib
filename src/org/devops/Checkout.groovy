@@ -6,6 +6,13 @@ def GetCode(srcUrl, branchName){
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
                     url: srcUrl]])
 
+    // 获取HEAD的tags
+    def tagsAtHEAD = sh(
+        script: 'git tag --points-at HEAD',
+        returnStdout: true
+    ).trim()
+
+    def tagList = tagsAtHEAD ? tagsAtHEAD.split('\n') : []
 
     // 获取完整 commit id
     def commitId = sh(
@@ -33,12 +40,15 @@ def GetCode(srcUrl, branchName){
     ).trim()
 
     // 提取tag
-    def tag = ""
-    def isTag = branchName.startsWith('refs/tags/')
-    if (isTag) {
-        tag = branchName - 'refs/tags/'
-    } else {
-        tag = "${branchName}-${commitId.substring(0, 8)}"
+    def version = ""
+    if (branchName.startsWith('refs/tags/')) {
+        version = branchName - 'refs/tags/'
+    } 
+    else if (tagList.contains(branchName)) {
+        version = branchName
+    }
+    else {
+        version = "${branchName}-${commitId.substring(0, 8)}"
     }
 
     return [
@@ -48,6 +58,6 @@ def GetCode(srcUrl, branchName){
         title: title,
         message: commitMessage,
         committer: committer,
-        tag: tag
+        version: version
     ]
 }
