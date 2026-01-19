@@ -11,7 +11,7 @@ def DeployByArgocd(Map params) {
     checkout scmGit(branches: [[name: params.manifestsBranch]], 
                     extensions: [], 
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
-                    url: Dparams.manifestsUrl]])
+                    url: params.manifestsUrl]])
 
 
     sh """
