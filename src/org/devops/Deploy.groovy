@@ -13,6 +13,10 @@ def DeployByArgocd(Map params) {
     """
 }
 
+def RollbackbackByArgocd(){
+    break
+}
+
 def DeployByAnsible(Map params) {
     // 检查必需参数
     if (!params.deployType) error("缺少必需参数: deployType")
