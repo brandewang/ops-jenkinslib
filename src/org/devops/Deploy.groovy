@@ -55,7 +55,7 @@ def DeployByArgocd(Map params) {
             git commit -m "更新 ${params.manifestsPath} ${params.valueFile} 镜像tag为: ${params.version}"
             
             # 推送到远程仓库
-            git push ${params.manifestsUrl} ${params.manifestsBranch}
+            git push  http://${GIT_USER}:${GIT_PASS}@${repoUrl} ${params.manifestsBranch}
             
             echo "Git 提交和推送完成"
         """
