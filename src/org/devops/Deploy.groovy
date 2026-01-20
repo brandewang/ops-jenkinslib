@@ -8,6 +8,8 @@ def DeployByArgocd(Map params) {
     if (!params.manifestsPath) error("缺少必需参数: manifestsPath")
     if (!params.version) error("缺少必需参数: version")
 
+    cleanWs()
+    
     checkout scmGit(branches: [[name: params.manifestsBranch]], 
                     extensions: [], 
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
