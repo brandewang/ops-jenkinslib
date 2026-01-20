@@ -13,12 +13,37 @@ def DeployByArgocd(Map params) {
                     userRemoteConfigs: [[credentialsId: '24ad9e2f-a9e7-43ae-8611-bd81df2802bd', 
                     url: params.manifestsUrl]])
 
-
+    // 修改镜像版本
     sh """
       cd ${params.manifestsPath}
-      ls -l
-      echo ${params.version}
-      echo ${params.valueFile}
+
+      # 检查文件是否存在
+      if [ ! -f "${params.valueFile}" ]; then
+        echo "错误: 文件 ${params.valueFile} 不存在"
+        exit 1
+      fi
+
+      sed -i 's/tag:.*/tag: "${params.version}"/' ${params.valueFile}
+    """
+
+    // 提交到Git仓库
+    sh """
+        cd ${params.manifestsPath}
+        
+        # 配置 Git 用户信息（根据你的环境可能需要修改）
+        git config user.email "jenkins@example.com"
+        git config user.name "Jenkins"
+        
+        # 添加修改的文件
+        git add ${params.valueFile}
+        
+        # 提交更改
+        git commit -m "更新 ${params.manifestsPath} ${params.valueFile} 镜像tag为: ${params.version}"
+        
+        # 推送到远程仓库
+        git push origin ${params.manifestsBranch}
+        
+        echo "Git 提交和推送完成"
     """
 }
 
