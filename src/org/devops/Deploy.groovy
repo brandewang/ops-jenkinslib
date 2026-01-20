@@ -32,6 +32,12 @@ def DeployByArgocd(Map params) {
             git config user.email "jenkins@example.com"
             git config user.name "Jenkins"
 
+            # 配置Git使用内存缓存
+            git config --global credential.helper 'cache --timeout=300'
+            
+            # 第一次需要输入凭据（通过环境变量）
+            (echo "username=\${GIT_USER}"; echo "password=\${GIT_PASS}") | git credential-cache store
+
             cd ${params.manifestsPath}
     
             # 检查文件是否存在
@@ -49,7 +55,7 @@ def DeployByArgocd(Map params) {
             git commit -m "更新 ${params.manifestsPath} ${params.valueFile} 镜像tag为: ${params.version}"
             
             # 推送到远程仓库
-            git push  http://${GIT_USER}:${GIT_PASS}@${repoUrl} ${params.manifestsBranch}
+            git push ${params.manifestsUrl} ${params.manifestsBranch}
             
             echo "Git 提交和推送完成"
         """
