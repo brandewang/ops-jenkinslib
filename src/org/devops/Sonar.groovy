@@ -1,7 +1,7 @@
 package org.devops
 
 def SonarJava(projectName, projectDesc, projectVersion){
-    def sonarServer = 'http://192.168.0.1:9000'
+    def sonarServer = 'http://192.168.5.80:9000'
     withCredentials([string(credentialsId: '702d71be-1238-474f-9755-18728aac9c81', variable: 'AUTH_TOKEN')]){
         sh """
             sonar-scanner -Dsonar.host.url=${sonarServer} \
@@ -22,7 +22,7 @@ def SonarJava(projectName, projectDesc, projectVersion){
 }
 
 def SonarOther(projectName, projectDesc, projectVersion){
-    def sonarServer = 'http://192.168.0.1:9000'
+    def sonarServer = 'http://192.168.5.80:9000'
     withCredentials([string(credentialsId: '702d71be-1238-474f-9755-18728aac9c81', variable: 'AUTH_TOKEN')]){
         sh """
             sonar-scanner -Dsonar.host.url=${sonarServer} \
