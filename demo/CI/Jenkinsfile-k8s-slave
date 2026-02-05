@@ -171,6 +171,21 @@ pipeline {
             }
         }
 
+        stage('QA'){
+            when {
+                allOf {
+                    expression {
+                        app.sonarProject
+                    }
+                }
+            }
+            steps{
+                script{
+                    sonar.SonarScan(app.appType, app.sonarProject, env.SRC_COMMIT_TITLE, env.ARTIFACT_VERSION)
+                }
+            }
+        }
+        
         stage('Trigger Downstream') {
             steps {
                 script {
