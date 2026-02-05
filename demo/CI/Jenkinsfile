@@ -169,9 +169,11 @@ pipeline {
                     }
                 }
             }
-            steps{
-                script{
-                    sonar.SonarScan(app.appType, app.sonarProject, env.SRC_COMMIT_TITLE, env.ARTIFACT_VERSION)
+            dir('code') {
+                steps{
+                    script{
+                        sonar.SonarScan(app.appType, app.sonarProject, env.SRC_COMMIT_TITLE, env.ARTIFACT_VERSION)
+                    }
                 }
             }
         }
