@@ -180,8 +180,8 @@ pipeline {
                     }
                 }
             }
-            dir('code') {
-                steps{
+            steps{
+                dir('code') {
                     script{
                         sonar.SonarScan(app.appType, app.sonarProject, env.SRC_COMMIT_TITLE, env.ARTIFACT_VERSION)
                     }
