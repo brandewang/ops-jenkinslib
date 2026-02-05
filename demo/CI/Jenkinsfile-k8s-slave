@@ -17,7 +17,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = ''
 
 // ========== 应用变量 ==========
-def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'module': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true]
+def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'appModule': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true, 'sonarProject': 'devops03-maven-service']
 
 // ========== 下游任务 ==========
 def jobs = ['项目01/TST/devops03-maven-service']
@@ -124,7 +124,7 @@ pipeline {
                 container("${app.appType}") {
                     dir('code'){
                         script {
-                            buildTool.CodeBuild("${app.appType}","${app.module}")
+                            buildTool.CodeBuild("${app.appType}","${app.appModule}")
                         }
                     }
                 }
@@ -150,7 +150,7 @@ pipeline {
                         // 上传到 Maven 仓库
                         if(app.mavenDeploy){
                             container("${app.appType}") {
-                                artifacts.DeployMavenArtifact(app.module)
+                                artifacts.DeployMavenArtifact(app.appModule)
                             }
                         }
                         // 上传到 Nexus raw 仓库
@@ -159,7 +159,7 @@ pipeline {
                         // 或者自定义的简单版本号验证
                         // def isVersionValid = env.ARTIFACT_VERSION ==~ /^v?\d+\.\d+\.\d+(-\w+)?$/
                         if(app.nexusPush){
-                            artifacts.PushRawArtifacts(app.project, app.appName, app.appType, app.module)
+                            artifacts.PushRawArtifacts(app.project, app.appName, app.appType, app.appModule)
                         }
                         // 上传到 Harbor 镜像仓库
                         if(app.dockerBuild){
