@@ -7,6 +7,7 @@ def buildTool = new Build()
 def unittest = new UnitTest()
 def notified = new Notified()
 def artifacts = new Artifacts()
+def sonar = new Sonar()
 
 
 // ========== 配置变量 ==========
@@ -185,7 +186,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Trigger Downstream') {
             steps {
                 script {
