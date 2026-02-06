@@ -6,7 +6,7 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
             sonar-scanner -Dsonar.projectKey=${projectName} \
             -Dsonar.projectName=${projectName} \
             -Dsonar.projectVersion=${projectVersion} \
-            -Dsonar.ws.timeout=30 \
+            -Dsonar.scanner.socketTimeout=30 \
             -Dsonar.projectDescription=${projectDesc} \
             -Dsonar.links.homepage=${homePage} \
             -Dsonar.sources=src \
@@ -15,10 +15,10 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
             -Dsonar.java.test.binaries=target/test-classes \
             -Dsonar.java.surefire.report=target/surefire-reports
         """
-        def qg =waitForQualityGate()
-        if (qg.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-        }
+    }
+    def qg = waitForQualityGate()
+    if (qg.status != 'OK') {
+        error "Pipeline aborted due to quality gate failure: ${qg.status}"
     }
 }
 
@@ -28,16 +28,16 @@ def SonarOther(projectName, projectDesc, projectVersion, homePage){
             sonar-scanner -Dsonar.projectKey=${projectName} \
             -Dsonar.projectName=${projectName} \
             -Dsonar.projectVersion=${projectVersion} \
-            -Dsonar.ws.timeout=30 \
+            -Dsonar.scanner.socketTimeout=30 \
             -Dsonar.projectDescription=${projectDesc} \
             -Dsonar.links.homepage=${homePage} \
             -Dsonar.sources=src \
             -Dsonar.sourceEncoding=UTF-8 
         """
-        def qg =waitForQualityGate()
-        if (qg.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-        }
+    }
+    def qg = waitForQualityGate()
+    if (qg.status != 'OK') {
+        error "Pipeline aborted due to quality gate failure: ${qg.status}"
     }
 }
 
