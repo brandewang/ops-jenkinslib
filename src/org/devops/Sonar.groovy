@@ -1,6 +1,6 @@
 package org.devops
 
-def SonarJava(projectName, projectDesc, projectVersion){
+def SonarJava(projectName, projectDesc, projectVersion, homePage){
     withSonarQubeEnv("sonarqube-server"){
         sh """
             sonar-scanner -Dsonar.projectKey=${projectName} \
@@ -8,7 +8,7 @@ def SonarJava(projectName, projectDesc, projectVersion){
             -Dsonar.projectVersion=${projectVersion} \
             -Dsonar.ws.timeout=30 \
             -Dsonar.projectDescription=${projectDesc} \
-            -Dsonar.links.homepage=http://www.baidu.com \
+            -Dsonar.links.homepage=${homePage} \
             -Dsonar.sources=src \
             -Dsonar.sourceEncoding=UTF-8 \
             -Dsonar.java.binaries=target/classes \
