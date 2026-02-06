@@ -39,7 +39,7 @@ pipeline {
                     deploy.DeployByArgocd(
                         manifestsUrl: DEFAULT_MANIFESTS_URL,
                         manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
-                        manifestsPath: "${app.project}/${app.appName}",
+                        manifestsPath: "${app.project}/charts/${app.appName}",
                         valueFile: app.valueFile,
                         version: params.releaseVersion
                     )
