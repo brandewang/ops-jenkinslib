@@ -3,7 +3,7 @@ package org.devops
 def SonarJava(projectName, projectDesc, projectVersion){
     withSonarQubeEnv("sonarqube-server"){
         sh """
-            -Dsonar.projectKey=${projectName} \
+            sonar-scanner -Dsonar.projectKey=${projectName} \
             -Dsonar.projectName=${projectName} \
             -Dsonar.projectVersion=${projectVersion} \
             -Dsonar.ws.timeout=30 \
