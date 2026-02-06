@@ -36,7 +36,7 @@ def SonarOther(projectName, projectDesc, projectVersion, homePage){
 def SonarQualityGate(){
     def qg = waitForQualityGate()
     if (qg.status != 'OK') {
-        ERROR_MESSAGE = "Pipeline aborted due to quality gate failure: ${qg.status}"
+        env.ERROR_MESSAGE = "Pipeline aborted due to quality gate failure: ${qg.status}"
         error "${ERROR_MESSAGE}"
     }
 }
