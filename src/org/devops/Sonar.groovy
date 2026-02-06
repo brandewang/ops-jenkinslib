@@ -16,10 +16,6 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
             -Dsonar.java.surefire.report=target/surefire-reports
         """
     }
-    def qg = waitForQualityGate()
-    if (qg.status != 'OK') {
-        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-    }
 }
 
 def SonarOther(projectName, projectDesc, projectVersion, homePage){
@@ -35,9 +31,13 @@ def SonarOther(projectName, projectDesc, projectVersion, homePage){
             -Dsonar.sourceEncoding=UTF-8 
         """
     }
+}
+
+def SonarQualityGate(){
     def qg = waitForQualityGate()
     if (qg.status != 'OK') {
-        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        ERROR_MESSAGE = "Pipeline aborted due to quality gate failure: ${qg.status}"
+        error "${ERROR_MESSAGE}"
     }
 }
 
