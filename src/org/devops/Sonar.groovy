@@ -18,7 +18,7 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
     }
 }
 
-def SonarOther(projectName, projectDesc, projectVersion){
+def SonarOther(projectName, projectDesc, projectVersion, homePage){
     withSonarQubeEnv("sonarqube-server"){
         sh """
             sonar-scanner -Dsonar.projectKey=${projectName} \
@@ -34,7 +34,7 @@ def SonarOther(projectName, projectDesc, projectVersion){
 }
 
 //Main
-def SonarScan(type, prjectName, projectDesc, projectVersion){
+def SonarScan(type, prjectName, projectDesc, projectVersion, homePage){
     switch(type){
         case "maven":
             SonarJava(prjectName, projectDesc, projectVersion, homePage)
