@@ -32,8 +32,7 @@ pipeline {
         choice(
             name: 'ACTION',
             choices: ['deploy', 'rollback'],
-            description: '选择执行的操作',
-            defaultValue: 'deploy'
+            description: '选择执行的操作'
         )
         string 'releaseVersion'
     }
