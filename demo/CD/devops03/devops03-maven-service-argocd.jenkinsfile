@@ -77,7 +77,8 @@ pipeline {
                     env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
 
                     // 设置构建描述
-                    currentBuild.description = """              
+                    currentBuild.description = """  
+                        Action: ${params.ACTION}            
                         Version: ${env.releaseVersion}
                     """.stripIndent().trim()
                     currentBuild.displayName = "#${env.BUILD_NUMBER} - ${env.triggerDescription}"

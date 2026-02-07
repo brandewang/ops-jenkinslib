@@ -93,6 +93,7 @@ pipeline {
 
                     // 设置构建描述
                     currentBuild.description = """
+                        Action: ${params.ACTION}
                         DeployHosts: ${app.deployHosts}
                         DeployType: ${app.deployType}                 
                         Version: ${env.releaseVersion}
