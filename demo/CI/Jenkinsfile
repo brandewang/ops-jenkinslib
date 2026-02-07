@@ -65,7 +65,6 @@ pipeline {
     }
 
     parameters {
-        // string(name: 'PARAMS_SRC_URL', defaultValue: DEFAULT_SRC_URL, description: '源代码仓库URL')
         choice(
         name: 'PARAMS_SRC_URL',
         choices: [
