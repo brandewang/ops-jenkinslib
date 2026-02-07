@@ -32,11 +32,20 @@ pipeline {
     }
 
     parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['deploy', 'rollback'],
+            description: '选择执行的操作',
+            defaultValue: 'deploy'
+        )
         string 'releaseVersion'
     }
 
     stages{
         stage("Deploy"){
+            when {
+                expression { params.ACTION == 'deploy' }
+            }
             steps{
                 script{
                     deploy.DeployByAnsible(
@@ -54,10 +63,9 @@ pipeline {
         }
         stage("Rollback"){
             when {
-                allOf {
-                    expression {
-                        env.ROLLBACK_NEEDED
-                    }
+                anyOf {
+                    expression { params.ACTION == 'rollback' }
+                    expression { env.ROLLBACK_NEEDED }
                 }
             }
             steps{
