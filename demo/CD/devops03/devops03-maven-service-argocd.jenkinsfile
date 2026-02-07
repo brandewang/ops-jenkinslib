@@ -65,7 +65,9 @@ pipeline {
             }
             steps{
                 script{
-                    deploy.RollbackByArgocd()
+                    deploy.RollbackByArgocd(
+                        argoApp: "${app.project}-${app.env}-${app.appName}"
+                    )
                 }
             }
         }

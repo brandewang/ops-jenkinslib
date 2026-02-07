@@ -90,7 +90,10 @@ def DeployByArgocd(Map params) {
     }
 }
 
-def RollbackByArgocd(){
+def RollbackByArgocd(Map params){
+    // 检查必需参数
+    if (!params.argoApp) error("缺少必需参数: argoApp")
+    
     withCredentials([
         usernamePassword(
             credentialsId: 'f7718f4a-a724-4e59-bdad-a09f69456517',
