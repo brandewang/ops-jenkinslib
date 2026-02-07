@@ -5,28 +5,28 @@ def GetMavenProjectInfo(pomPath = 'pom.xml',module='') {
     def info = [:]
     
     info.artifactId = sh(
-        script: "mvn help:evaluate -Dexpression=project.artifactId -f ${pomPath} -q -DforceStdout",
+        script: "mvn help:evaluate -Dexpression=project.artifactId -f ${pomPath} -q -DforceStdout -o",
         returnStdout: true
     ).trim()
     
     info.version = sh(
-        script: "mvn help:evaluate -Dexpression=project.version -f ${pomPath} -q -DforceStdout",
+        script: "mvn help:evaluate -Dexpression=project.version -f ${pomPath} -q -DforceStdout -o",
         returnStdout: true
     ).trim()
     
     info.groupId = sh(
-        script: "mvn help:evaluate -Dexpression=project.groupId -f ${pomPath} -q -DforceStdout",
+        script: "mvn help:evaluate -Dexpression=project.groupId -f ${pomPath} -q -DforceStdout -o",
         returnStdout: true
     ).trim()
     
     info.finalName = sh(
-        script: "mvn help:evaluate -Dexpression=project.build.finalName -f ${pomPath} -q -DforceStdout",
+        script: "mvn help:evaluate -Dexpression=project.build.finalName -f ${pomPath} -q -DforceStdout -o",
         returnStdout: true
     ).trim()
 
     // 获取打包类型
     info.packaging = sh(
-        script: "mvn help:evaluate -Dexpression=project.packaging -f ${pomPath} -q -DforceStdout",
+        script: "mvn help:evaluate -Dexpression=project.packaging -f ${pomPath} -q -DforceStdout -o",
         returnStdout: true
     ).trim()
     
