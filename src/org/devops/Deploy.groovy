@@ -91,9 +91,19 @@ def DeployByArgocd(Map params) {
 }
 
 def RollbackByArgocd(){
-    sh """
-        argocd app rollback ${params.argoApp} --timeout 300
-    """
+    withCredentials([
+        usernamePassword(
+            credentialsId: 'f7718f4a-a724-4e59-bdad-a09f69456517',
+            usernameVariable: 'ARGO_USER',
+            passwordVariable: 'ARGO_PASS'
+        )
+    ]) {
+        def argocdUrl = "192.168.5.81:32580"
+        sh """
+            argocd login ${argocdUrl} --username ${ARGO_USER} --password ${ARGO_PASS} --insecure
+            argocd app rollback ${params.argoApp} --timeout 300
+        """
+    }
 }
 
 def DeployByAnsible(Map params) {
