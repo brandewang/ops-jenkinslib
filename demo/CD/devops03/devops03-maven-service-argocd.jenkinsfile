@@ -46,6 +46,7 @@ pipeline {
             steps{
                 script{
                     deploy.DeployByArgocd(
+                        argoApp: "${app.project}-${app.env}-${app.appName}",
                         manifestsUrl: DEFAULT_MANIFESTS_URL,
                         manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
                         manifestsPath: "${app.project}/${app.env}/${app.appName}",

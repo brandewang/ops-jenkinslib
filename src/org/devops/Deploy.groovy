@@ -3,6 +3,7 @@ package org.devops
 
 def DeployByArgocd(Map params) {
     // 检查必需参数
+    if (!params.argoApp) error("缺少必需参数: argoApp")
     if (!params.manifestsUrl) error("缺少必需参数: manifestsUrl")
     if (!params.manifestsBranch) error("缺少必需参数: manifestsBranch")
     if (!params.manifestsPath) error("缺少必需参数: manifestsPath")
@@ -60,10 +61,39 @@ def DeployByArgocd(Map params) {
             echo "Git 提交和推送完成"
         """
     }
+    
+    // 同步ArgoCD App
+    withCredentials([
+        usernamePassword(
+            credentialsId: 'f7718f4a-a724-4e59-bdad-a09f69456517',
+            usernameVariable: 'ARGO_USER',
+            passwordVariable: 'ARGO_PASS'
+        )
+    ]) {
+        def argocdUrl = "192.168.5.81:32580"
+        sh """
+            argocd login ${argocdUrl} --username ${ARGO_USER} --password ${ARGO_PASS} --insecure
+            argocd app sync ${params.argoApp} --prune --force --timeout 300
+        """
+        try {
+            sh """
+                argocd app wait ${params.argoApp} --health --timeout 300
+            """
+            echo "发布状态检测成功"
+            
+        } catch (Exception e) {
+            echo "发布状态检测失败: ${e.message}"
+            env.ROLLBACK_NEEDED = true
+            env.ERROR_MESSAGE = e.message
+            currentBuild.result = 'UNSTABLE'
+        }
+    }
 }
 
 def RollbackByArgocd(){
-    println("rollback")
+    sh """
+        argocd app rollback ${params.argoApp} --timeout 300
+    """
 }
 
 def DeployByAnsible(Map params) {
