@@ -17,7 +17,7 @@ def app = [
     'project':'demo01', 
     'env': 'prod',
     'appName':'devops03-maven-service', 
-    'valueFile':'values-prod.yaml'
+    'valueFile':'values.yaml'
     ]
 
 
@@ -48,7 +48,7 @@ pipeline {
                     deploy.DeployByArgocd(
                         manifestsUrl: DEFAULT_MANIFESTS_URL,
                         manifestsBranch: DEFAULT_MANIFESTS_BRANCH,
-                        manifestsPath: "${app.project}/${env}/${app.appName}",
+                        manifestsPath: "${app.project}/${app.env}/${app.appName}",
                         valueFile: app.valueFile,
                         version: params.releaseVersion
                     )
