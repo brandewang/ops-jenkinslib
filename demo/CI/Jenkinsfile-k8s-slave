@@ -180,8 +180,9 @@ pipeline {
                     }
                 }
             }
-            container("sonar-scanner") {
-                steps{
+            
+            steps{
+                container("sonar-scanner") {
                     dir('code') {
                         script{
                             sonar.SonarScan(app.appType, app.sonarProject, app.sonarProject, env.ARTIFACT_VERSION, DEFAULT_SRC_URL)
