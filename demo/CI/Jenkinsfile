@@ -18,7 +18,7 @@ def DEFAULT_CONFIG_BRANCH = 'main'
 def DEFAULT_USER_EMAIL = ''
 
 // ========== 应用变量 ==========
-def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'appModule': '', 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true, 'sonarProject': 'devops03-maven-service']
+def app = ['project':'devops', 'appName':'devops03-maven-service', 'appType': 'maven', 'appModule': '', 'unitTest': false, 'mavenDeploy': true, 'nexusPush': true, 'dockerBuild': true, 'sonarProject': 'devops03-maven-service']
 
 // ========== 下游任务 ==========
 def jobs = ['项目01/TST/devops03-maven-service']
@@ -126,6 +126,13 @@ pipeline {
         }
 
         stage("UnitTest"){
+            when {
+                allOf {
+                    expression {
+                        app.unitTest
+                    }
+                }
+            }      
             steps {
                 dir('code'){
                     script {
