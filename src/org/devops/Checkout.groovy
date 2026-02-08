@@ -58,6 +58,7 @@ def GetCode(srcUrl, branchName){
         title: title,
         message: commitMessage,
         committer: committer,
-        version: version
+        version: version,
+        branch: branchName.split('/').last()
     ]
 }

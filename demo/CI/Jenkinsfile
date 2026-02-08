@@ -99,6 +99,7 @@ pipeline {
                         env.SRC_COMMIT_TITLE = checkoutResult.title
                         env.SRC_COMMITTER = checkoutResult.committer
                         env.ARTIFACT_VERSION = checkoutResult.version
+                        env.SRC_BRANCH_NAME = checkoutResult.branch
                     }
                 }
 
@@ -213,7 +214,7 @@ pipeline {
                     // 设置构建描述
                     currentBuild.description = """                           
                         Title: ${env.SRC_COMMIT_TITLE}
-                        Branch: ${env.SRC_BRANCH}
+                        Branch: ${env.SRC_BRANCH_NAME}
                         CommitID: ${env.SRC_COMMIT_ID}
                         Committer: ${env.webhook_commitUser ?: env.SRC_COMMITTER }
                         Version: ${env.ARTIFACT_VERSION}
