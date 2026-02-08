@@ -1,6 +1,6 @@
 package org.devops
 
-def SonarJava(projectName, projectDesc, projectVersion, homePage){
+def SonarJava(projectName, projectDesc, projectVersion, homePage, branchName){
     withSonarQubeEnv("sonarqube-server"){
         sh """
             sonar-scanner -Dsonar.projectKey=${projectName} \
@@ -11,6 +11,7 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
             -Dsonar.links.homepage=${homePage} \
             -Dsonar.sources=src \
             -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.branch.name=${branchName} \
             -Dsonar.java.binaries=target/classes \
             -Dsonar.java.test.binaries=target/test-classes \
             -Dsonar.java.surefire.report=target/surefire-reports
@@ -18,7 +19,7 @@ def SonarJava(projectName, projectDesc, projectVersion, homePage){
     }
 }
 
-def SonarOther(projectName, projectDesc, projectVersion, homePage){
+def SonarOther(projectName, projectDesc, projectVersion, homePage, branchName){
     withSonarQubeEnv("sonarqube-server"){
         sh """
             sonar-scanner -Dsonar.projectKey=${projectName} \
@@ -28,7 +29,8 @@ def SonarOther(projectName, projectDesc, projectVersion, homePage){
             -Dsonar.projectDescription=${projectDesc} \
             -Dsonar.links.homepage=${homePage} \
             -Dsonar.sources=src \
-            -Dsonar.sourceEncoding=UTF-8 
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.branch.name=${branchName}
         """
     }
 }
@@ -42,13 +44,13 @@ def SonarQualityGate(){
 }
 
 //Main
-def SonarScan(type, prjectName, projectDesc, projectVersion, homePage){
+def SonarScan(type, prjectName, projectDesc, projectVersion, homePage, branchName){
     switch(type){
         case "maven":
-            SonarJava(prjectName, projectDesc, projectVersion, homePage)
+            SonarJava(prjectName, projectDesc, projectVersion, homePage, branchName)
             break;
         default:
-            SonarOther(prjectName, projectDesc, projectVersion, homePage)
+            SonarOther(prjectName, projectDesc, projectVersion, homePage, branchName)
             break;
     }
 }
