@@ -37,7 +37,9 @@ try {
     env.webhook_commitTitle = webHookData["title"]             //提交描述
     env.webhook_commitUser = webHookData["user_username"]           //提交人
     env.webhook_userEmail = webHookData["user_email"]               //邮箱
-
+    if (env.webhook_userEmail == 'null') {
+        env.webhook_userEmail = ''
+    }
  } catch(e){
     print(e)
  }
