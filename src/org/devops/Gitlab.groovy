@@ -26,7 +26,7 @@ def GitlabHttpReq(reqType, reqUrl, reqbody) {
 
 def GetProjectId(groupName, projectName){
     // 修正字符串插值方式
-    apiUrl = "projects?search=${projectName}"
+    def apiUrl = "projects?search=${projectName}"
     def responseContent = GitlabHttpReq('GET', apiUrl, "")
     
     // 修正变量名拼写错误
