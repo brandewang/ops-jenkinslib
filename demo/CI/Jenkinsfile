@@ -144,6 +144,25 @@ pipeline {
             }
         }
 
+        stage('QA'){
+            when {
+                allOf {
+                    expression {
+                        app.sonarProject
+                    }
+                }
+            }
+            
+            steps{
+                dir('code') {
+                    script{
+                        sonar.SonarScan(app.appType, app.sonarProject, app.sonarProject, env.ARTIFACT_VERSION, DEFAULT_SRC_URL, env.SRC_BRANCH_NAME)
+                        sonar.SonarQualityGate()
+                    }
+                }
+            }
+        }
+        
         stage('PushArtifacts'){
             steps {
                 dir('code') {
@@ -166,25 +185,6 @@ pipeline {
                         }     
                     }
 
-                }
-            }
-        }
-
-        stage('QA'){
-            when {
-                allOf {
-                    expression {
-                        app.sonarProject
-                    }
-                }
-            }
-            
-            steps{
-                dir('code') {
-                    script{
-                        sonar.SonarScan(app.appType, app.sonarProject, app.sonarProject, env.ARTIFACT_VERSION, DEFAULT_SRC_URL, env.SRC_BRANCH_NAME)
-                        sonar.SonarQualityGate()
-                    }
                 }
             }
         }
