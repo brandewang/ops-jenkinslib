@@ -223,6 +223,7 @@ pipeline {
     post {
         always{
             wrap([$class: 'BuildUser']) {
+                cleanWs()
                 script {
                     def causes = currentBuild.getBuildCauses()
                     env.triggerDescription = causes ? causes[0].shortDescription : "未知触发"
